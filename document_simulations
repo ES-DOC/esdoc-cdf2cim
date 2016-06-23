@@ -1,0 +1,244 @@
+#!/usr/bin/env python2.7
+
+import sys
+import cf
+import logging
+import re
+
+from os      import walk  as os_walk
+from os.path import isdir as os_path_isdir
+from os.path import join  as os_path_join
+ 
+## create logger 
+#logger = logging.getLogger('cmip6_simulation')
+#logger.setLevel(logging.INFO)
+
+#infiles='/net/jasmin/chestnut/data-15/jonathan/cmip5/tas/tas_Amon_FGOALS-g2*'
+#infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abr*'
+#infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR'
+#infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2'
+#infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/yr/ocnBgchem/Oyr/r1i1p1/v20120430/d*'
+
+
+# --------------------------------------------------------------------
+# Find all input files from $1, [$2, ...] input files and directories
+# --------------------------------------------------------------------
+infiles = sys.argv[1:]
+print 'infiles=',infiles
+files = []
+
+for filename in infiles:
+    print filename,
+    if os_path_isdir(filename):
+        # Recursively find all files in this directory
+        files.extend(
+            os_path_join(path, f)
+            for path, subdirs, filenames in os_walk(filename, followlinks=True)
+            for f in filenames
+        )
+    else:
+        files.append(filename) 
+    print ' Subtotal n files:', len(files)
+#--- End: for
+files = sorted(set(files))
+
+print files
+
+# Dictionary of CMIP6 -> CIM2 mappings. key = CMIP6 netCDF gloabl
+# attribute name, value = equivalent CIM2 Simulation property name.
+cmip6_to_cim2 = {
+    'activity_id'             : 'activity_id',
+    'branch_method'           : 'branch_method',
+    'experiment'              : 'experiment',
+    'experiment_id'           : 'experiment_id',
+    'forcing_index'           : 'forcing_index',
+    'further_info_url'        : 'further_info_url',
+    'initialization_index'    : 'initialization_index',
+    'institution'             : 'institution',
+    'institution_id'          : 'institution_id',
+    'mip_era'                 : 'mip_era',
+    'parent_activity_id'      : 'parent_activity_id',
+    'parent_experiment_id'    : 'parent_experiment_id',
+    'parent_mip_era'          : 'parent_mip_era',
+    'parent_source_id'        : 'parent_source_id',
+    'parent_sub_experiment_id': 'parent_sub_experiment_id',
+    'physics_index'           : 'physics_index',
+    'realization_index'       : 'realization_index',
+    'source'                  : 'source',
+    'source_id'               : 'source_id',
+    'source_type'             : 'source_type',
+    'sub_experiment'          : 'sub_experiment',
+    'sub_experiment_id'       : 'sub_experiment_id',
+}
+
+# Dictionary of CMIP5 -> CIM2 mappings. key = CMIP5 netCDF gloabl
+# attribute name, value = equivalent CIM2 Simulation property name.
+cmip5_to_cim2 = {
+    'project_id'           : 'activity_id',
+    'branch_time'          : 'branch_time_in_parent', 
+    'experiment_id'        : 'experiment_id',
+    'initialization_method': 'initialization_index',
+    'institute_id'         : 'institution_id', 
+    'model_id'             : 'source_id',
+    'project_id'           : 'mip_era',
+    'parent_experiment_id' : 'parent_experiment_id',
+    'parent_experiment_rip': 'parent_variant_label',
+    'physics_version'      : 'physics_index',
+    'source'               : 'source',
+    'realization'          : 'realization_index',
+}          
+
+# Dictionary of simulations: key = a unique simulation identifier,
+# value = a list of fields for the simualation.
+simulations      = {}
+
+# Dictionary of simulation dates: key = a unique simulation
+# identifier, value = a list of datetime objects which define the time
+# span of the simualtion.
+simulation_dates = {}
+
+for filename in files:
+    for f in cf.read(filename, ignore_read_error=True, verbose=True, aggregate=False):
+
+        # Get the time coordinates
+        t = f.dim('T')
+        
+        if t is None or not t.Units.isreftime or t.ndim > 1:
+            # No (suitable) time coordinates
+            cf.close_one_file()
+            continue
+
+        properties = f.properties #(copy=False)
+        cim2_properties = {}
+
+        if properties.get('mip_era') == 'CMIP6':
+            mapping = cmip6_to_cim2
+        elif properties.get('project_id') == 'CMIP5':
+            mapping = cmip5_to_cim2
+
+        for cmip_attr, cim2_attr in mapping.iteritems():
+            cim2_properties[cim2_attr] = properties.pop(cmip_attr, None)
+
+        cim2_properties['calendar'] = getattr(t, 'calendar', 'gregorian')
+        cim2_properties.pop(None, None)
+
+        if mapping is cmip6_to_cim2:
+            # Special CMIP6 to CIM2 processing which has not been
+            # provided by the mapping
+            
+            # parent_variant_label
+            cim2_properties.update(
+                zip(['parent_realization_index',
+                     'parent_initialization_index',
+                     'parent_physics_index',
+                     'parent_forcing_index'],
+                    re.findall('\d+', properties.get('parent_variant_label', 'none'))))
+
+            # branch_time_in_child
+            # branch_time_in_parent
+            # parent_time_units
+            parent_branch_units = properties.get('parent_branch_units')            
+            if parent_time_units is None:
+                parent_time_units = t.Units
+            else:                
+                m = re.match('(.*) *\((.*?)\)', parent_time_units)
+                if m:
+                    parent_time_units = cf.Units(*m.groups())
+                else:
+                    parent_time_units = cf.Units(parent_time_units, 
+                                                 cim2_properties['calendar'])
+                
+            branch_time_in_parent = properties.get('branch_time_in_parent')
+            if branch_time_in_parent is not None:
+                x = cf.Data([branch_time_in_parent], parent_time_units).dtarray[0]
+                cim2_properties['branch_time_in_parent'] = str(x)
+
+            branch_time_in_child = properties.get('branch_time_in_child')
+            if branch_time_in_child is not None:
+                x = cf.Data([branch_time_in_child], t.Units).dtarray[0]
+                cim2_properties['branch_time_in_parent'] = str(x)
+
+        elif mapping is cmip5_to_cim2:
+            # Special CMIP5 to CIM2 processing which has not been
+            # provided by the mapping
+            pass
+
+        simulation_id = tuple(sorted(cim2_properties.items()))
+
+        simulations.setdefault(simulation_id, []).append(f)
+
+        # Extract the first and last time time coordinates
+        if t.size == 1:
+            index = 0
+        else:
+            index = [0, -1]
+
+        if t.hasbounds:
+            dates = t.bounds.subspace[index].dtarray.flat
+        else:
+            dates = t.subspace[index].dtarray
+        simulation_dates.setdefault(simulation_id, []).extend(dates)
+    
+        cf.close_one_file()
+#--- End: for
+
+cim2_documents = []
+
+for simulation_id, simulation_fields in simulations.iteritems():
+
+    cim2_properties = dict(simulation_id)
+
+    print
+    print cim2_properties
+
+    extra1 = {
+        'institution' : [],
+        'experiment'  : [],        
+        'forcing'     : [],
+        'variant_info': [],
+    }
+
+    extra2 = {
+        'contact'    : [],
+        'references' : [], 
+    }
+
+    dates = []
+    for f in simulation_fields:
+
+        for x, v in extra1.iteritems():
+            v.append(f.getprop(x, None))
+
+        for x, v in extra2.iteritems():
+            v.append(f.getprop(x, None))
+    #--- End: for
+
+    dates = simulation_dates.get(simulation_id)
+    if dates:
+        dates = cf.Data(list(set(dates)), dt=True).asreftime()
+        cim2_properties['start_time'] = str(dates.min().dtarray[0])
+        cim2_properties['end_time']   = str(dates.max().dtarray[0])
+
+        # Include items from extra1 if they have a unique value
+        for x, v in extra1.iteritems():
+            v = set(v)
+            v.discard(None)
+            if len(v) == 1:
+                cim2_properties[x] = v.pop()
+
+        # Include all unique items from extra2
+        for x, v in extra2.iteritems():
+            v = set(v)
+            v.discard(None)
+            if len(v) == 1:
+                cim2_properties[x] = ', '.join(sorted(v))
+
+        cim2_documents.append(cim2_properties)
+#--- End: for
+
+print '=================================================='
+for d in cim2_documents:
+    print
+    print d
+
+print '\nn sims:', len(cim2_documents)
