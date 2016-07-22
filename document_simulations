@@ -47,7 +47,7 @@ print files
 # Dictionary of CMIP6 -> CIM2 mappings. key = CMIP6 netCDF gloabl
 # attribute name, value = equivalent CIM2 Simulation property name.
 cmip6_to_cim2 = {
-    'activity_id'             : None,
+    'activity_id'             : 'activity_id',
     'branch_method'           : None,                       # activity_classes.parent_simulation
     'branch_time_in_child'    : None,                       # activity_classes.parent_simulation
     'branch_time_in_parent'   : None,                       # activity_classes.parent_simulation
