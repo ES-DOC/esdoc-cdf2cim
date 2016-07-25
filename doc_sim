@@ -7,3 +7,5 @@ import simulations # esdoc-cdf2cim/simulation
 inputs = sys.argv[1:]
 
 print simulations.find_simulations(*inputs)
+[{'branch_time_in_parent': 52560.0, 'parent_experiment_id': 'historical', 'experiment_id': 'rcp85', 'initialization_index': 1, 'start_time': '2005-12-01 00:00:00', 'realization_index': 1, 'parent_variant_label': 'r1i1p1', 'institution_id': 'MOHC', 'source': None, 'end_time': '2010-12-01 00:00:00', 'mip_era': 'CMIP5', 'physics_index': 1, 'source_id': 'HadGEM2-ES', 'calendar': '360_day'}]
+[davidhassell@jasmin-sci1 esdoc-cdf2cim]
