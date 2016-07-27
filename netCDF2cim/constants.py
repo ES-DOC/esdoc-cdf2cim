@@ -62,17 +62,20 @@ cmip5_to_cim2 = {
     'model_id'             : 'source_id',
     'project_id'           : 'mip_era',
     'parent_experiment_id' : 'parent_experiment_id',
-    'parent_experiment_rip': 'parent_variant_label',
+    'parent_experiment_rip': None,
     'physics_version'      : 'physics_index',
     'references'           : 'references',
     'source_id'            : 'source',
     'realization'          : 'realization_index',
 }        
 
+
+# CMIP6 file properties from which a simulation id can be constructed
 cmip6_id = sorted([
     'further_info_url',
 ])
 
+# CMIP5 file properties from which a simulation id can be constructed
 cmip5_id = sorted([
     'activity_id',
     'experiment_id',

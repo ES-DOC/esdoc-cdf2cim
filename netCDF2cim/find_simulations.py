@@ -6,18 +6,27 @@ from .constants  import cmip5_to_cim2, cmip6_to_cim2, cmip5_id, cmip6_id
 from .find_files import find_files
 
 
-def simulation_id(file_properties):
-    '''
-    '''
-    if is_CMIP6(file_properties):
-        _id = cmip6_id
-    elif is_CMIP5(file_properties):
-        _id = cmip5_id
+#def simulation_id(file_properties):
+#    '''
+#    '''
+#    if is_CMIP6(file_properties):
+#        _id = cmip6_id
+#    elif is_CMIP5(file_properties):
+#        _id = cmip5_id
+#
+#    return tuple((x, file_properties.get(x)) for x in _id)
 
-    return tuple((x, properties.get(x)) for x in _id)
-        
-
-def find_simulations(*inputs):
+def simulation_id(cim2_properties):
+    '''
+    '''    
+    return tuple([(k, v) for k, v in cim2_properties.iteritems()
+                  if k not in ('contact',
+                               'references',                              
+                               'forcing',
+                               'variant_info')
+              ])
+    
+def find_simulations(inputs, verbose=False):
     '''
     
 :Examples 1:
@@ -50,6 +59,9 @@ def find_simulations(*inputs):
     simulation_dates = {}
     
     files = find_files(*inputs)
+
+    if verbose:
+        print 'files:\n', files, '\n'
 
     # For each the file ...
     for filename in files:
@@ -112,7 +124,7 @@ def find_simulations(*inputs):
         cim2_properties = properties[0].copy()
 
         # Find the start and end dates of the whole simulation
-        simulation_start_end_dates(cim2_properties, simulation_dates.get(identity)):
+        simulation_start_end_dates(cim2_properties, simulation_dates.get(identity))
         
         # Include items from extra1 if they have a unique value
         extra1 = {
@@ -151,11 +163,16 @@ def find_simulations(*inputs):
             if len(v) == 1:
                 cim2_properties[prop] = ', '.join(sorted(v))
 
-        # cim2_properties not contains everything needed to create
+        # cim2_properties now contains everything needed to create
         # CIM2 Enemble, Ensemble Member and Simulation documents
         out.append(cim2_properties)
     #--- End: for
 
+    if verbose:
+        print 'out:\n',
+        for x in out:
+            print x, '\n'
+            print x.keys()
     return out
 #--- End: def
 
@@ -234,10 +251,10 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
              'parent_initialization_index',
              'parent_physics_index',
              'parent_forcing_index'],
-            re.findall('\d+', file_properties.get('parent_variant_label', 'none'))))
+            map(int, re.findall('\d+', file_properties.get('parent_variant_label', 'none')))))
     
-     # ----------------------------------------------------------------
-   # CIM2 branch_time_in_parent
+    # ----------------------------------------------------------------
+    # CIM2 branch_time_in_parent
     # CIM2 branch_time
     # ----------------------------------------------------------------
     parent_branch_units = file_properties.get('parent_branch_units')            
@@ -260,9 +277,7 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
     if branch_time_in_child is not None:
         x = cf.Data([branch_time_in_child], time_coords.Units).dtarray[0]
         cim2_properties['branch_time'] = str(x)
-            
-      
-
+                  
 def parse_cmip5_properties(cim2_properties, file_properties, time_coords):
     '''
 
@@ -278,7 +293,18 @@ def parse_cmip5_properties(cim2_properties, file_properties, time_coords):
 
     None
     '''      
-    return []  
+    # ----------------------------------------------------------------
+    # CIM2 parent_realization_index
+    # CIM2 parent_initialization_index
+    # CIM2 parent_physics_index
+    # CIM2 parent_forcing_index
+    # ----------------------------------------------------------------
+    cim2_properties.update(
+        zip(['parent_realization_index',
+             'parent_initialization_index',
+             'parent_physics_index',
+             'parent_forcing_index'],
+            map(int, re.findall('\d+', file_properties.get('parent_experiment_rip', 'none')))))
 
 
 def is_CMIP5(file_properties):
