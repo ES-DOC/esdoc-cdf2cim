@@ -63,7 +63,7 @@ def find_simulations(inputs, verbose=False):
     if verbose:
         print 'files:\n', files, '\n'
 
-    # For each the file ...
+    # For each file ...
     for filename in files:
     
         # For each CF field in the file ...
@@ -177,12 +177,27 @@ def find_simulations(inputs, verbose=False):
 #--- End: def
 
 def simulation_start_end_dates(cim2_properties, dates):
-    '''
+    '''Given a sequence of date-time objects which collectively define the
+time span of the simulation, find the start and end times of the
+simulation. Insert the results into the cim2_properties dictionary.
+
 :Parameters:
 
     cim2_properties : dict
 
-    dates : dict
+    dates : sequence of date-time objects
+
+:Returns:
+
+    None
+
+:Examples:
+
+>>> simulation_start_end_dates(cim2_properties, dates)
+>>> cim2_properties['start_time']
+'1016-05-04 00:00:00'
+>>> cim2_properties['end_time']
+'2045-12-31 12:30:00'
 
     '''
     # CIM2 start_time
@@ -194,7 +209,8 @@ def simulation_start_end_dates(cim2_properties, dates):
         
 
 def file_start_end_dates(time_coords):
-    '''
+    '''Given a time coordinate object from the netCDF file, return
+earliest and latest date-time objects.
 
 :Parameters:
 
@@ -202,7 +218,13 @@ def file_start_end_dates(time_coords):
 
 :Returns:
 
-    out : list
+    out : numpy array of date-time objects
+
+:Examples:
+
+>>> file_start_end_dates(time_coords)
+array([ 450-11-16 00:00:00,  451-10-16 12:00:00], dtype=object)
+
     '''
 
     if time_coords is None or not time_coords.Units.isreftime or time_coords.ndim > 1:
@@ -253,30 +275,36 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
              'parent_forcing_index'],
             map(int, re.findall('\d+', file_properties.get('parent_variant_label', 'none')))))
     
-    # ----------------------------------------------------------------
-    # CIM2 branch_time_in_parent
-    # CIM2 branch_time
-    # ----------------------------------------------------------------
-    parent_branch_units = file_properties.get('parent_branch_units')            
+    # parent_time_units
+    parent_time_units = file_properties.get('parent_time_units')            
     if parent_time_units is None:
+        # parent_time_units has not been set in file, so they are
+        # assumed to be the same as the child time units
         parent_time_units = time_coords.Units
     else:                
+        # parent_time_units have been set in file
         m = re.match('(.*) *\((.*?)\)', parent_time_units)
         if m:
             parent_time_units = cf.Units(*m.groups())
         else:
-            parent_time_units = cf.Units(parent_time_units, 
+            parent_time_units = cf.Units(parent_time_units,
                                          cim2_properties['calendar'])
             
+    # ----------------------------------------------------------------
+    # CIM2 branch_time_in_parent
+    # ----------------------------------------------------------------
     branch_time_in_parent = file_properties.get('branch_time_in_parent')
     if branch_time_in_parent is not None:
-        x = cf.Data([branch_time_in_parent], parent_time_units).dtarray[0]
+        x = cf.Data([branch_time_in_parent], units=parent_time_units).dtarray[0]
         cim2_properties['branch_time_in_parent'] = str(x)
 
+    # ----------------------------------------------------------------
+    # CIM2 branch_time_in_child 
+    # ----------------------------------------------------------------
     branch_time_in_child = file_properties.get('branch_time_in_child')
     if branch_time_in_child is not None:
-        x = cf.Data([branch_time_in_child], time_coords.Units).dtarray[0]
-        cim2_properties['branch_time'] = str(x)
+        x = cf.Data([branch_time_in_child], units=time_coords.Units).dtarray[0]
+        cim2_properties['branch_time_in_child'] = str(x)
                   
 def parse_cmip5_properties(cim2_properties, file_properties, time_coords):
     '''

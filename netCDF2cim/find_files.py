@@ -12,7 +12,7 @@ def find_files(*inputs):
 #infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/yr/ocnBgchem/Oyr/r1i1p1/v20120430/d*'
 
     if not inputs:
-        raise ValueError("Must supply at least one file or directory")
+        raise ValueError("Must supply at least one file or directory from which simulation files can be found")
 
     outfiles = []
     
