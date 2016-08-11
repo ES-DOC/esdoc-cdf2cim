@@ -6,15 +6,15 @@ from .constants  import cmip5_to_cim2, cmip6_to_cim2, cmip5_id, cmip6_id
 from .find_files import find_files
 
 
-#def simulation_id(file_properties):
+#def simulation_id(global_attributes):
 #    '''
 #    '''
-#    if is_CMIP6(file_properties):
+#    if is_CMIP6_file(global_attributes):
 #        _id = cmip6_id
-#    elif is_CMIP5(file_properties):
+#    elif is_CMIP5_file(global_attributes):
 #        _id = cmip5_id
 #
-#    return tuple((x, file_properties.get(x)) for x in _id)
+#    return tuple((x, global_attributes.get(x)) for x in _id)
 
 def simulation_id(cim2_properties):
     '''
@@ -58,10 +58,10 @@ def find_simulations(inputs, verbose=False):
     # time span of the simulation.
     simulation_dates = {}
     
-    files = find_files(*inputs)
+    files = find_files(inputs)
 
     if verbose:
-        print 'files:\n', files, '\n'
+        print 'Files:\n', '\n'.join(sorted(files)), '\n'
 
     # For each file ...
     for filename in files:
@@ -77,11 +77,12 @@ def find_simulations(inputs, verbose=False):
                 continue
       
             # Simply map file properties to CIM2 properties
-            file_properties = f.properties
+            global_attributes = f.properties
             cim2_properties = {}
-        
-            CMIP5 = is_CMIP5(file_properties)            
-            CMIP6 = is_CMIP6(file_properties)
+            
+            # Find out which mip-era file we have
+            CMIP5 = is_CMIP5_file(global_attributes)            
+            CMIP6 = is_CMIP6_file(global_attributes)
 
             # Parse properties which only require a simple mapping
             if CMIP6:
@@ -90,7 +91,7 @@ def find_simulations(inputs, verbose=False):
                 simple_mapping = cmip5_to_cim2
     
             for file_prop, cim2_prop in simple_mapping.iteritems():
-                cim2_properties[cim2_prop] = file_properties.get(file_prop)
+                cim2_properties[cim2_prop] = global_attributes.get(file_prop)
     
             # Add the time corodiantes' calendar to the cim2 properties
             cim2_properties['calendar'] = get_calendar(time_coords)
@@ -98,9 +99,9 @@ def find_simulations(inputs, verbose=False):
             # Parse properties which require something more
             # complicated than a simple mapping
             if CMIP6:
-                parse_cmip6_properties(cim2_properties, file_properties, time_coords)
+                parse_cmip6_properties(cim2_properties, global_attributes, time_coords)
             elif CMIP5:
-                parse_cmip5_properties(cim2_properties, file_properties, time_coords)
+                parse_cmip5_properties(cim2_properties, global_attributes, time_coords)
 
             # Create a canonical identity for the simulation that this
             # field belongs to
@@ -247,14 +248,15 @@ array([ 450-11-16 00:00:00,  451-10-16 12:00:00], dtype=object)
     
     return dates
 
-def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
+def parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     '''
 
 :Parameters:
 
     cim2_properties : dict
 
-    file_properties : dict
+    global_attributes : dict
+        The netCDF global attributes of the file.
 
     time_coords : cf.Coordinate
 
@@ -273,10 +275,10 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
              'parent_initialization_index',
              'parent_physics_index',
              'parent_forcing_index'],
-            map(int, re.findall('\d+', file_properties.get('parent_variant_label', 'none')))))
+            map(int, re.findall('\d+', global_attributes.get('parent_variant_label', 'none')))))
     
     # parent_time_units
-    parent_time_units = file_properties.get('parent_time_units')            
+    parent_time_units = global_attributes.get('parent_time_units')            
     if parent_time_units is None:
         # parent_time_units has not been set in file, so they are
         # assumed to be the same as the child time units
@@ -293,7 +295,7 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
     # ----------------------------------------------------------------
     # CIM2 branch_time_in_parent
     # ----------------------------------------------------------------
-    branch_time_in_parent = file_properties.get('branch_time_in_parent')
+    branch_time_in_parent = global_attributes.get('branch_time_in_parent')
     if branch_time_in_parent is not None:
         x = cf.Data([branch_time_in_parent], units=parent_time_units).dtarray[0]
         cim2_properties['branch_time_in_parent'] = str(x)
@@ -301,19 +303,20 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
     # ----------------------------------------------------------------
     # CIM2 branch_time_in_child 
     # ----------------------------------------------------------------
-    branch_time_in_child = file_properties.get('branch_time_in_child')
+    branch_time_in_child = global_attributes.get('branch_time_in_child')
     if branch_time_in_child is not None:
         x = cf.Data([branch_time_in_child], units=time_coords.Units).dtarray[0]
         cim2_properties['branch_time_in_child'] = str(x)
                   
-def parse_cmip5_properties(cim2_properties, file_properties, time_coords):
+def parse_cmip5_properties(cim2_properties, global_attributes, time_coords):
     '''
 
 :Parameters:
 
     cim2_properties : dict
 
-    file_properties : dict
+    global_attributes : dict
+        The netCDF global attributes of the file.
 
     time_coords : cf.Coordinate
 
@@ -332,14 +335,38 @@ def parse_cmip5_properties(cim2_properties, file_properties, time_coords):
              'parent_initialization_index',
              'parent_physics_index',
              'parent_forcing_index'],
-            map(int, re.findall('\d+', file_properties.get('parent_experiment_rip', 'none')))))
+            map(int, re.findall('\d+', global_attributes.get('parent_experiment_rip', 'none')))))
 
 
-def is_CMIP5(file_properties):
-    return file_properties.get('project_id') == 'CMIP5'
+def is_CMIP5_file(global_attributes):
+    '''True if file is a CMIP5 file, False otherwise.
+
+:Parameters:
+
+    global_attributes : dict
+        The netCDF global attributes of the file.
     
-def is_CMIP6(file_properties):
-    return file_properties.get('mip_era') == 'CMIP6'
+:Returns:
+
+    out : bool
+        True if the file is a CMIP5 file, False otherwise.
+'''
+    return global_attributes.get('project_id') == 'CMIP5'
+    
+def is_CMIP6_file(global_attributes):
+    '''True if file is a CMIP6 file, False otherwise.
+    
+:Parameters:
+    
+    global_attributes : dict
+        The netCDF global attributes of the file.
+    
+:Returns:
+
+    out : bool
+        True if the file is a  CMIP5 file, False otherwise.
+'''
+    return global_attributes.get('mip_era') == 'CMIP6'
     
 def get_calendar(time_coords):
     return getattr(time_coords, 'calendar', 'gregorian')
