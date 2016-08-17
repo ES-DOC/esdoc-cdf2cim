@@ -1,8 +1,11 @@
 from os      import walk
-from os.path import isdir, join
+from os.path import isdir, join, abspath
  
 def find_files(inputs):
-    '''asdasdas
+    '''Return all of the files implied by the inputs.
+
+The inputs may be filenames or directories. In the latter case,
+directories are searched recursively.
 
 :Parameters:
 
@@ -14,13 +17,17 @@ def find_files(inputs):
 :Returns:
 
     out : set
-        A set of the all files found.
+        A set of the names of all of the files found. Files names are
+        in normalised, absolutised form.
 
 :Examples:
 
->>> find_files(['/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc'])
+>>> import os
+>>> os.getcwd()
+'/badc/cmip5'
+>>> find_files(['data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc'])
 {'/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc'}
->>> find_files(['/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc',
+>>> find_files(['cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc',
 ...             '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2'])
 {'/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc'
  '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/orog.nc',
@@ -37,7 +44,11 @@ def find_files(inputs):
 
     if not inputs:
         raise ValueError(
-"Must supply at least one file or directory from which files can be found")
+"Must provide at least one file or directory from which files can be found")
+
+    if isinstance(inputs, basestring):
+        raise ValueError(
+"The input files and directories must comprise a sequence of strings, not {!r}".format(inputs))
 
     # List of the output files
     outfiles = []
@@ -46,12 +57,12 @@ def find_files(inputs):
         if isdir(filename):
             # Recursively find all files in this directory
             outfiles.extend(
-                join(path, f)
+                abspath(join(path, f))
                 for path, subdirs, filenames in walk(filename, followlinks=True)
                 for f in filenames
             )
         else:
             # Just add this file to the list
-            outfiles.append(filename) 
+            outfiles.append(abspath(filename))
 
     return set(outfiles)
