@@ -52,12 +52,18 @@
 #        ]
 #    }
 
-# Dictionary of CMIP6 -> CIM2 mappings. key = CMIP6 netCDF gloabl
-# attribute name, value = equivalent CIM2 Simulation property name.
+# --------------------------------------------------------------------
+# Dictionary of simple CMIP6 to CIM2 mappings. key = CMIP6 netCDF
+# gloabl attribute name, value = equivalent CIM2 Simulation property
+# name.
+#
+# A value of None does not necessarily mean that the CMIP6 attribute
+# is ignored. It means either it is is ignored (e.g. 'table_id') or it
+# requires some preprocessing before being used
+# (e.g. 'parent_source_id')
+# --------------------------------------------------------------------
 cmip6_to_cim2 = {
-    #-------------------------  ------------------------
     # CMIP6 attribute           CIM2 Simulation property
-    #-------------------------  ------------------------
     'activity_id'             : None,                    # E.g. 'CMIP, 'PMIP', 'LS3MIP LUMIP'
     'branch_method'           : None,                    # E.g. 'standard', 'none provided'
     'branch_time_in_child'    : None,                    # E.g. 365.0D0, 0.0D0
@@ -106,12 +112,17 @@ cmip6_to_cim2 = {
     'variant_label'           : None,                    # E.g. 'r1i1p1f1', 'f1i2p223f3'
 }
 
-# Dictionary of CMIP5 -> CIM2 mappings. key = CMIP5 netCDF gloabl
+# --------------------------------------------------------------------
+# Dictionary of CMIP5 to CIM2 mappings. key = CMIP5 netCDF gloabl
 # attribute name, value = equivalent CIM2 Simulation property name.
+#
+# A value of None does not necessarily mean that the CMIP5 attribute
+# is ignored. It means either it is is ignored (e.g. 'table_id') or it
+# requires some preprocessing before being used
+# (e.g. 'parent_experiment_rip')
+# --------------------------------------------------------------------
 cmip5_to_cim2 = {
-    #-------------------------  ------------------------
     # CMIP5 attribute           CIM2 Simulation property
-    #-------------------------  ------------------------
     'branch_time'             : 'branch_time_in_parent', 
     'contact'                 : 'contact',
     'experiment_id'           : 'experiment_id',
@@ -129,12 +140,16 @@ cmip5_to_cim2 = {
 }        
 
 
+# --------------------------------------------------------------------
 # CMIP6 file properties from which a simulation id can be constructed
+# --------------------------------------------------------------------
 cmip6_id = sorted([
     'further_info_url',
 ])
 
+# --------------------------------------------------------------------
 # CMIP5 file properties from which a simulation id can be constructed
+# --------------------------------------------------------------------
 cmip5_id = sorted([
     'activity_id',
     'experiment_id',

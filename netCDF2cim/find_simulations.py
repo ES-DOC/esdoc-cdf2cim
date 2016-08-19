@@ -6,15 +6,15 @@ from .constants  import cmip5_to_cim2, cmip6_to_cim2, cmip5_id, cmip6_id
 from .find_files import find_files
 
 
-#def simulation_id(file_properties):
+#def simulation_id(global_attributes):
 #    '''
 #    '''
-#    if is_CMIP6(file_properties):
+#    if is_CMIP6_file(global_attributes):
 #        _id = cmip6_id
-#    elif is_CMIP5(file_properties):
+#    elif is_CMIP5_file(global_attributes):
 #        _id = cmip5_id
 #
-#    return tuple((x, file_properties.get(x)) for x in _id)
+#    return tuple((x, global_attributes.get(x)) for x in _id)
 
 def simulation_id(cim2_properties):
     '''
@@ -43,30 +43,38 @@ def find_simulations(inputs, verbose=False):
 
 
     '''
+    # ----------------------------------------------------------------
+    # Initialise variables
+    # ----------------------------------------------------------------
     # List of dictionaries, one per simulation. Each dictionary's
     # key/value pairs fully define a simulation. This list is returned.
     out = []
-    
 
     # Dictionary of simulations: key = a unique simulation identifier,
-    # value = a list of dictionaries which describe each file of the
-    # simulation
+    # value = a list of dictionaries, each of which describes a single
+    # file of the simulation
     simulations = {}
     
     # Dictionary of simulation dates: key = a unique simulation
-    # identifier, value = a list of date-time objects which define the
-    # time span of the simulation.
+    # identifier, value = a list of date-time objects which
+    # collectively define the time span of the simulation.
     simulation_dates = {}
     
-    files = find_files(*inputs)
+    # ----------------------------------------------------------------
+    # Get the input files
+    # ----------------------------------------------------------------
+    input_files = find_files(inputs)
 
     if verbose:
-        print 'files:\n', files, '\n'
+        print 'Input files:\n', '\n'.join(sorted(input_files)), '\n'
 
-    # For each file ...
-    for filename in files:
+    # ----------------------------------------------------------------
+    # Split the input files into groups such that all of the files in
+    # a group belong to the same simulation
+    # ----------------------------------------------------------------
+    for filename in input_files:
     
-        # For each CF field in the file ...
+        # For each CF field in this input file ...
         for f in cf.read(filename, ignore_read_error=True, verbose=False, aggregate=False):
             
             # Get the time coordinates and find the earliest and
@@ -74,33 +82,36 @@ def find_simulations(inputs, verbose=False):
             time_coords = f.dim('T')
             dates = file_start_end_dates(time_coords)
             if not dates:
+                # No valid dates were found, so ignore this file.
                 continue
-      
-            # Simply map file properties to CIM2 properties
-            file_properties = f.properties
-            cim2_properties = {}
-        
-            CMIP5 = is_CMIP5(file_properties)            
-            CMIP6 = is_CMIP6(file_properties)
 
+            # Get the netCDF global attributes
+            global_attributes = f.properties
+
+            # Find out which mip-era file we have
+            mip_era = MIP_era(global_attributes)
+
+            # Simply map file properties to CIM2 properties
+            cim2_properties = {}
+            
             # Parse properties which only require a simple mapping
-            if CMIP6:
+            if mip_era == 'CMIP6':
                 simple_mapping = cmip6_to_cim2
-            elif CMIP5:
+            elif mip_era == 'CMIP5':
                 simple_mapping = cmip5_to_cim2
     
             for file_prop, cim2_prop in simple_mapping.iteritems():
-                cim2_properties[cim2_prop] = file_properties.get(file_prop)
+                cim2_properties[cim2_prop] = global_attributes.get(file_prop)
     
-            # Add the time corodiantes' calendar to the cim2 properties
+            # Add the time coordinates' calendar to the cim2 properties
             cim2_properties['calendar'] = get_calendar(time_coords)
     
             # Parse properties which require something more
             # complicated than a simple mapping
-            if CMIP6:
-                parse_cmip6_properties(cim2_properties, file_properties, time_coords)
-            elif CMIP5:
-                parse_cmip5_properties(cim2_properties, file_properties, time_coords)
+            if mip_era == 'CMIP6':
+                parse_cmip6_properties(cim2_properties, global_attributes, time_coords)
+            elif mip_era == 'CMIP5':
+                parse_cmip5_properties(cim2_properties, global_attributes, time_coords)
 
             # Create a canonical identity for the simulation that this
             # field belongs to
@@ -119,14 +130,22 @@ def find_simulations(inputs, verbose=False):
         cf.close_one_file()
     #--- End: for
     
+    # ----------------------------------------------------------------
+    # For each simulation, set some simulation properties which can
+    # only be known when of all the contributing files have been
+    # identified.
+    # ----------------------------------------------------------------
     for identity, properties in simulations.iteritems():
     
         cim2_properties = properties[0].copy()
 
         # Find the start and end dates of the whole simulation
-        simulation_start_end_dates(cim2_properties, simulation_dates.get(identity))
-        
-        # Include items from extra1 if they have a unique value
+        start_date, end_date = simulation_start_end_dates(simulation_dates.get(identity))
+        if start_date:
+            cim2_properties['start_time'] = start_date
+            cim2_properties['end_time']   = end_date
+
+        # Include items from extra1 only if all files have the same value
         extra1 = {
             'institution_id': [],
             'experiment_id' : [],        
@@ -134,25 +153,22 @@ def find_simulations(inputs, verbose=False):
             'variant_info'  : [],
         }
     
-        dates = []
         for p in properties:
             for x, v in extra1.iteritems():
                 v.append(p.get(x))
     
-        # Include items from extra1 if they have a unique value
         for prop, v in extra1.iteritems():
             v = set(v)
             v.discard(None)
             if len(v) == 1:
                 cim2_properties[prop] = v.pop()
 
-        # Include all unique items from extra2
+        # Include all items from extra2 from all files, omitting duplicates.
         extra2 = {
             'contact'    : [],
             'references' : [], 
         }
     
-        dates = []
         for p in properties:
             for x, v in extra2.iteritems():
                 v.append(p.get(x))
@@ -160,52 +176,51 @@ def find_simulations(inputs, verbose=False):
         for prop, v in extra2.iteritems():
             v = set(v)
             v.discard(None)
-            if len(v) == 1:
+            if v:
                 cim2_properties[prop] = ', '.join(sorted(v))
 
-        # cim2_properties now contains everything needed to create
-        # CIM2 Enemble, Ensemble Member and Simulation documents
+        # ------------------------------------------------------------
+        # The cim2_properties dictionary now contains everything
+        # needed to create CIM2 Enemble, Ensemble Member and
+        # Simulation documents. So add it to the output list.
+        # ------------------------------------------------------------
         out.append(cim2_properties)
     #--- End: for
 
     if verbose:
-        print 'out:\n',
+        print 'Simulations:\n',
         for x in out:
+            print x.keys(), '\n'
             print x, '\n'
-            print x.keys()
+
     return out
 #--- End: def
 
-def simulation_start_end_dates(cim2_properties, dates):
+def simulation_start_end_dates(dates):
     '''Given a sequence of date-time objects which collectively define the
 time span of the simulation, find the start and end times of the
-simulation. Insert the results into the cim2_properties dictionary.
+simulation and return them as ISO8601=-like strings.
 
 :Parameters:
-
-    cim2_properties : dict
 
     dates : sequence of date-time objects
 
 :Returns:
 
-    None
+    start, end : str, str
+        The start and end dates of the simulation
 
 :Examples:
 
->>> simulation_start_end_dates(cim2_properties, dates)
->>> cim2_properties['start_time']
-'1016-05-04 00:00:00'
->>> cim2_properties['end_time']
-'2045-12-31 12:30:00'
+>>> simulation_start_end_dates(dates)
+'1016-05-04 00:00:00', '2045-12-31 12:30:00'
 
     '''
-    # CIM2 start_time
-    # CIM2 end_time
     if dates:
         dates = cf.Data(list(set(dates)), dt=True).asreftime()
-        cim2_properties['start_time'] = str(dates.min().dtarray[0])
-        cim2_properties['end_time']   = str(dates.max().dtarray[0])
+        return str(dates.min().dtarray[0]), str(dates.max().dtarray[0])
+
+    return (None, None)
         
 
 def file_start_end_dates(time_coords):
@@ -247,14 +262,15 @@ array([ 450-11-16 00:00:00,  451-10-16 12:00:00], dtype=object)
     
     return dates
 
-def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
+def parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     '''
 
 :Parameters:
 
     cim2_properties : dict
 
-    file_properties : dict
+    global_attributes : dict
+        The netCDF global attributes of the file.
 
     time_coords : cf.Coordinate
 
@@ -273,10 +289,10 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
              'parent_initialization_index',
              'parent_physics_index',
              'parent_forcing_index'],
-            map(int, re.findall('\d+', file_properties.get('parent_variant_label', 'none')))))
+            map(int, re.findall('\d+', global_attributes.get('parent_variant_label', 'none')))))
     
     # parent_time_units
-    parent_time_units = file_properties.get('parent_time_units')            
+    parent_time_units = global_attributes.get('parent_time_units')            
     if parent_time_units is None:
         # parent_time_units has not been set in file, so they are
         # assumed to be the same as the child time units
@@ -293,7 +309,7 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
     # ----------------------------------------------------------------
     # CIM2 branch_time_in_parent
     # ----------------------------------------------------------------
-    branch_time_in_parent = file_properties.get('branch_time_in_parent')
+    branch_time_in_parent = global_attributes.get('branch_time_in_parent')
     if branch_time_in_parent is not None:
         x = cf.Data([branch_time_in_parent], units=parent_time_units).dtarray[0]
         cim2_properties['branch_time_in_parent'] = str(x)
@@ -301,19 +317,20 @@ def parse_cmip6_properties(cim2_properties, file_properties, time_coords):
     # ----------------------------------------------------------------
     # CIM2 branch_time_in_child 
     # ----------------------------------------------------------------
-    branch_time_in_child = file_properties.get('branch_time_in_child')
+    branch_time_in_child = global_attributes.get('branch_time_in_child')
     if branch_time_in_child is not None:
         x = cf.Data([branch_time_in_child], units=time_coords.Units).dtarray[0]
         cim2_properties['branch_time_in_child'] = str(x)
                   
-def parse_cmip5_properties(cim2_properties, file_properties, time_coords):
+def parse_cmip5_properties(cim2_properties, global_attributes, time_coords):
     '''
 
 :Parameters:
 
     cim2_properties : dict
 
-    file_properties : dict
+    global_attributes : dict
+        The netCDF global attributes of the file.
 
     time_coords : cf.Coordinate
 
@@ -332,14 +349,33 @@ def parse_cmip5_properties(cim2_properties, file_properties, time_coords):
              'parent_initialization_index',
              'parent_physics_index',
              'parent_forcing_index'],
-            map(int, re.findall('\d+', file_properties.get('parent_experiment_rip', 'none')))))
+            map(int, re.findall('\d+', global_attributes.get('parent_experiment_rip', 'none')))))
 
 
-def is_CMIP5(file_properties):
-    return file_properties.get('project_id') == 'CMIP5'
+def MIP_era(global_attributes):
+    '''The mip era of the file.
+
+:Parameters:
+
+    global_attributes : dict
+        The netCDF global attributes of the file.
     
-def is_CMIP6(file_properties):
-    return file_properties.get('mip_era') == 'CMIP6'
+:Returns:
+
+    out : str or None
+        The mip era. One of ``'CMIP5'``, ``'CMIP6'`` or `None` if the
+        mip-era can not be determined.
+
+:Examples:
+
+>>> MIP_era(global_attributes)
+'CMIP6'
+
+    '''
+    if global_attributes.get('mip_era') == 'CMIP6':
+        return 'CMIP6'
+    elif global_attributes.get('project_id') == 'CMIP5':
+        return 'CMIP5'
     
 def get_calendar(time_coords):
     return getattr(time_coords, 'calendar', 'gregorian')
