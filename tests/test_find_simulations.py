@@ -11,7 +11,6 @@
 
 """
 import inspect
-import json
 import os
 
 import cdf2cim
@@ -55,7 +54,7 @@ def test_is_function():
 
 
 def test_find():
-    """ES-DOC :: cdf2cim :: find_simulations :: positive Test :: criteria = multiple files.
+    """ES-DOC :: cdf2cim :: find_simulations :: positive test :: criteria = multiple files.
 
     """
     for item in cdf2cim.find_simulations(_CRITERIA):

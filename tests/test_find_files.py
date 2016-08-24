@@ -35,7 +35,7 @@ def test_is_function():
 
 
 def test_invalid_criteria():
-    """ES-DOC :: cdf2cim :: find_files :: negative Test :: criteria = invalid
+    """ES-DOC :: cdf2cim :: find_files :: negative test :: criteria = invalid
 
     """
     for criteria in {
@@ -57,35 +57,35 @@ def test_invalid_criteria():
 
 
 def test_single_file():
-    """ES-DOC :: cdf2cim :: find_files :: positive Test :: criteria = a single file.
+    """ES-DOC :: cdf2cim :: find_files :: positive test :: criteria = a single file.
 
     """
     assert cdf2cim.find_files(_TEST_FILE) == set([_TEST_FILE])
 
 
 def test_multiple_files():
-    """ES-DOC :: cdf2cim :: find_files :: positive Test :: criteria = multiple files.
+    """ES-DOC :: cdf2cim :: find_files :: positive test :: criteria = multiple files.
 
     """
     assert cdf2cim.find_files(_TEST_FILES) == set(_TEST_FILES)
 
 
 def test_single_directory():
-    """ES-DOC :: cdf2cim :: find_files :: positive Test :: criteria = a single directory.
+    """ES-DOC :: cdf2cim :: find_files :: positive test :: criteria = a single directory.
 
     """
     assert cdf2cim.find_files(_TEST_DIR) == set(_TEST_FILES)
 
 
 def test_multiple_directories():
-    """ES-DOC :: cdf2cim :: find_files :: positive Test :: criteria = multiple directories.
+    """ES-DOC :: cdf2cim :: find_files :: positive test :: criteria = multiple directories.
 
     """
     assert cdf2cim.find_files(_TEST_DIRS).intersection(set(_TEST_FILES)) == set(_TEST_FILES)
 
 
 def test_mixed_criteria():
-    """ES-DOC :: cdf2cim :: find_files :: positive Test :: criteria = single file, single directory.
+    """ES-DOC :: cdf2cim :: find_files :: positive test :: criteria = single file, single directory.
 
     """
     assert cdf2cim.find_files([_TEST_FILE, _TEST_DIR]) == set(_TEST_FILES)
