@@ -1,10 +1,10 @@
 #!/usr/bin/env python2.7
 
-import sys, netCDF2cim
+import sys, cdf2cim
 
 #inputs = sys.argv[1:]
 
 #netCDF2cim.find_simulations(inputs, verbose=1)
-netCDF2cim.find_simulations(['test_data'], verbose=1)
+cdf2cim.find_simulations(['test_data'], verbose=1)
 #[{'branch_time_in_parent': 52560.0, 'parent_experiment_id': 'historical', 'experiment_id': 'rcp85', 'initialization_index': 1, 'start_time': '2005-12-01 00:00:00', 'realization_index': 1, 'parent_variant_label': 'r1i1p1', 'institution_id': 'MOHC', 'source': None, 'end_time': '2010-12-01 00:00:00', 'mip_era': 'CMIP5', 'physics_index': 1, 'source_id': 'HadGEM2-ES', 'calendar': '360_day'}]
 

@@ -16,8 +16,8 @@ docs/_build
 env/
 dist
 venv
-netCDF2cim.egg-info
+cdf2cim.egg-info
 *-checkpoint.ipynb
-netCDF2cim/TODO.txt
+cdf2cim/TODO.txt
 tmp.ipynb
 tmp
