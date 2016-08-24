@@ -10,6 +10,18 @@
 
 
 """
+# MIP era: CMIP5.
+MIP_ERA_CMIP5 = 'CMIP5'
+
+# MIP era: CMIP6.
+MIP_ERA_CMIP6 = 'CMIP6'
+
+# Set of supported mip eras.
+MIP_ERA = {
+    MIP_ERA_CMIP5,
+    MIP_ERA_CMIP6
+    }
+
 
 # --------------------------------------------------------------------
 # Dictionary of simple CMIP6 to CIM2 mappings. key = CMIP6 netCDF
