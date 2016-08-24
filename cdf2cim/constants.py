@@ -21,7 +21,7 @@
 # requires some preprocessing before being used
 # (e.g. 'parent_source_id')
 # --------------------------------------------------------------------
-cmip6_to_cim2 = {
+CMIP6_TO_CIM2 = {
     # CMIP6 attribute           CIM2 Simulation property
     'activity_id'             : None,                    # E.g. 'CMIP, 'PMIP', 'LS3MIP LUMIP'
     'branch_method'           : None,                    # E.g. 'standard', 'none provided'
@@ -80,7 +80,7 @@ cmip6_to_cim2 = {
 # requires some preprocessing before being used
 # (e.g. 'parent_experiment_rip')
 # --------------------------------------------------------------------
-cmip5_to_cim2 = {
+CMIP5_TO_CIM2 = {
     # CMIP5 attribute           CIM2 Simulation property
     'branch_time'             : 'branch_time_in_parent',
     'contact'                 : 'contact',
@@ -102,14 +102,14 @@ cmip5_to_cim2 = {
 # --------------------------------------------------------------------
 # CMIP6 file properties from which a simulation id can be constructed
 # --------------------------------------------------------------------
-cmip6_id = sorted([
+CMIP6_ID = sorted([
     'further_info_url',
 ])
 
 # --------------------------------------------------------------------
 # CMIP5 file properties from which a simulation id can be constructed
 # --------------------------------------------------------------------
-cmip5_id = sorted([
+CMIP5_ID = sorted([
     'activity_id',
     'experiment_id',
     'initialization_index',

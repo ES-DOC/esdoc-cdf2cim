@@ -18,7 +18,7 @@ from os.path import abspath
 
 
 def find_files(inputs):
-    '''Return all of the files implied by the inputs.
+    """Return all of the files implied by the inputs.
 
 The inputs may be filenames or directories. In the latter case,
 directories are searched recursively.
@@ -50,14 +50,7 @@ directories are searched recursively.
  '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/yr/tas.nc',
  '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/yr/pr.nc'}
 
-    '''
-
-#infiles='/net/jasmin/chestnut/data-15/jonathan/cmip5/tas/tas_Amon_FGOALS-g2*'
-#infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abr*'
-#infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR'
-#infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2'
-#infiles = '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/yr/ocnBgchem/Oyr/r1i1p1/v20120430/d*'
-
+    """
     if not inputs:
         raise ValueError(
 "Must provide at least one file or directory from which files can be found")
