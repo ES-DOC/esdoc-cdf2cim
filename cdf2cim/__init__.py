@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2016 ES-DOC"
 __date__         = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.1.0.1"
+__version__ = "0.1.0.2"
 
 from .find_simulations import find_simulations
 
