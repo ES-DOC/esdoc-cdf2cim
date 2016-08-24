@@ -23,7 +23,9 @@ from setuptools.dist import Distribution
 # List of 3rd party python dependencies.
 _REQUIRES = [
     'cf-python',
-    'netCDF4'
+    'matplotlib',
+    'netCDF4',
+    'psutil'
     ]
 
 

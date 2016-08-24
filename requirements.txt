@@ -1,2 +1,4 @@
 cf-python
+matplotlib
 netCDF4
+psutil
