@@ -28,6 +28,12 @@ Who uses esdoc-cdf2cim ?
 ESG-F data node managers.
 
 
+How to install esdoc-cdf2cim ?
+--------------------------------------
+
+pip install cdf2cim
+
+
 Further Information ?
 --------------------------------------
 
