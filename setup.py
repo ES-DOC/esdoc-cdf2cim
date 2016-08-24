@@ -24,6 +24,7 @@ from setuptools.dist import Distribution
 _REQUIRES = [
     'cf-python',
     'matplotlib',
+    'numpy',
     'netCDF4',
     'psutil'
     ]
