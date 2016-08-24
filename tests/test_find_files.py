@@ -18,6 +18,7 @@ import cdf2cim
 
 
 
+# Pointers to various test data.
 _TEST_DATA = os.path.join(os.path.dirname(__file__), "test-data")
 _TEST_DIR = os.path.join(_TEST_DATA, 'cmip5')
 _TEST_DIRS = [_TEST_DIR, os.path.join(_TEST_DATA, 'cmip6')]
