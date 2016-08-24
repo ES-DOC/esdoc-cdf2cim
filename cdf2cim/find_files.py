@@ -10,68 +10,46 @@
 
 
 """
-from os      import walk
-from os.path import isdir
-from os.path import join
-from os.path import abspath
+import collections
+import os
+
+from cdf2cim import exceptions
 
 
 
-def find_files(inputs):
-    """Return all of the files implied by the inputs.
+def find_files(criteria):
+    """Return all NetCDF files implied by the criteria.
 
-The inputs may be filenames or directories. In the latter case,
-directories are searched recursively.
+    :param str|sequence criteria: Pointer(s) to file(s) and/or directorie(s). Directories (including symbolic links) are searched recursively.
 
-:Parameters:
+    :returns: A set of file paths.
+    :rtype: set
 
-    inputs : sequence of str
-        The files and directories to find. Directories are searched
-        recursively. Directories pointed by symbolic links are
-        searched.
-
-:Returns:
-
-    out : set
-        A set of the names of all of the files found. Files names are
-        in normalised, absolutised form.
-
-:Examples:
-
->>> import os
->>> os.getcwd()
-'/badc/cmip5'
->>> find_files(['data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc'])
-{'/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc'}
->>> find_files(['cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc',
-...             '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2'])
-{'/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/amip4xCO2/tas.nc'
- '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/orog.nc',
- '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/yr/tas.nc',
- '/badc/cmip5/data/cmip5/output1/IPSL/IPSL-CM5B-LR/abrupt4xCO2/yr/pr.nc'}
+    :raises exceptions.InvalidFileSearchCriteria: if search criteria are invalid
 
     """
-    if not inputs:
-        raise ValueError(
-"Must provide at least one file or directory from which files can be found")
+    # Convert to sequence (if necessary).
+    if isinstance(criteria, basestring):
+        criteria = [criteria]
 
-    if isinstance(inputs, basestring):
-        raise ValueError(
-"The input files and directories must comprise a sequence of strings, not {!r}".format(inputs))
+    # Exception if passed invalid pointers.
+    if not isinstance(criteria, collections.Iterable):
+        raise exceptions.InvalidFileSearchCriteria(criteria)
+    if [i for i in criteria if not isinstance(i, basestring)]:
+        raise exceptions.InvalidFileSearchCriteria(criteria)
+    if [i for i in criteria if not os.path.exists(i)]:
+        raise exceptions.InvalidFileSearchCriteria(criteria)
 
-    # List of the output files
+    # Determine set of absolute file pointers.
     outfiles = []
-
-    for filename in inputs:
-        if isdir(filename):
-            # Recursively find all files in this directory
+    for target in criteria:
+        if os.path.isfile(target):
+            outfiles.append(os.path.abspath(target))
+        elif os.path.isdir(target):
             outfiles.extend(
-                abspath(join(path, f))
-                for path, subdirs, filenames in walk(filename, followlinks=True)
+                os.path.abspath(os.path.join(folder, f))
+                for folder, _, filenames in os.walk(target, followlinks=True)
                 for f in filenames
             )
-        else:
-            # Just add this file to the list
-            outfiles.append(abspath(filename))
 
     return set(outfiles)

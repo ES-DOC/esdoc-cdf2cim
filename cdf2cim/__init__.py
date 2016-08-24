@@ -28,4 +28,5 @@ __version__ = "0.1.0.5"
 
 
 
+from cdf2cim.find_files import find_files
 from cdf2cim.find_simulations import find_simulations
