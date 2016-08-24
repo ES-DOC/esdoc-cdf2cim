@@ -1,6 +1,22 @@
+# -*- coding: utf-8 -*-
+
+"""
+.. module:: find_files.py
+   :license: GPL/CeCIL
+   :platform: Unix, Windows
+   :synopsis: Encpasulates determining which NetCDF files are considered within scope.
+
+.. moduleauthor:: David Hassel <david.hassell@ncas.ac.uk>
+
+
+"""
 from os      import walk
-from os.path import isdir, join, abspath
- 
+from os.path import isdir
+from os.path import join
+from os.path import abspath
+
+
+
 def find_files(inputs):
     '''Return all of the files implied by the inputs.
 
@@ -52,7 +68,7 @@ directories are searched recursively.
 
     # List of the output files
     outfiles = []
-    
+
     for filename in inputs:
         if isdir(filename):
             # Recursively find all files in this directory
