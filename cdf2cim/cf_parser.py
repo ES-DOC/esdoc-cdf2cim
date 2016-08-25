@@ -19,7 +19,6 @@ from cdf2cim import io
 
 
 
-
 def yield_parsed(targets):
     """Yields simulation information derived from a parse of cf files.
 

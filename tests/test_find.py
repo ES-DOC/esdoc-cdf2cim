@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: test_find_simulations.py
+.. module:: test_find.py
 
    :license: GPL / CeCILL
    :platform: Unix, Windows
-   :synopsis: Executes find_simulations unit tests.
+   :synopsis: Executes find simulations unit tests.
 
 .. moduleauthor:: Earth System Documentation (ES-DOC) <dev@es-doc.org>
 
@@ -46,32 +46,32 @@ _ATTRIBUTES = sorted([
 
 
 def test_is_function():
-    """ES-DOC :: cdf2cim :: find_simulations :: cdf2cim supports find_simulations function
+    """ES-DOC :: cdf2cim :: find :: cdf2cim supports find function
 
     """
-    assert inspect.isfunction(cdf2cim.find_simulations)
+    assert inspect.isfunction(cdf2cim.find)
 
 
 def test_find():
-    """ES-DOC :: cdf2cim :: find_simulations :: criteria = multiple files.
+    """ES-DOC :: cdf2cim :: find :: criteria = multiple files.
 
     """
     _assert_simulations(_CRITERIA, 1)
 
 
 def _assert_simulations(criteria, expected_length):
-    """Asserts a simulation item returned from find_simulations method.
+    """Asserts a simulation item returned from find method.
 
     """
     total = 0
-    for item in cdf2cim.find_simulations(criteria):
+    for item in cdf2cim.find(criteria):
         _assert_simulation(item)
         total += 1
     assert total == expected_length
 
 
 def _assert_simulation(obj):
-    """Asserts a simulation item returned from find_simulations method.
+    """Asserts a simulation item returned from find method.
 
     """
     assert isinstance(obj, dict)

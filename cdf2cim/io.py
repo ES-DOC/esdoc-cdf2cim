@@ -11,7 +11,9 @@
 
 """
 import collections
+import json
 import os
+import uuid
 
 import cf
 import numpy
@@ -22,26 +24,30 @@ from cdf2cim import logger
 
 
 def encode(obj):
-	"""Encodes an output from a map/reduce as a JSON safe dictionary.
+    """Encodes an output from a map/reduce as a JSON safe dictionary.
 
-	:param dict obj: Output from a map/reduce job.
+    :param dict obj: Output from a map/reduce job.
 
-	:returns: A JSON safe dictionary
-	:rtype: dict
+    :returns: A JSON safe dictionary
+    :rtype: dict
 
-	"""
-	def _encode(value):
-		"""Encodes a value.
+    """
+    def _encode(value):
+        """Encodes a value.
 
-		"""
-		if isinstance(value, numpy.float64):
-			return float(value)
-		elif isinstance(value, numpy.int32):
-			return int(value)
-		else:
-			return value
+        """
+        if isinstance(value, numpy.float64):
+            return float(value)
+        elif isinstance(value, numpy.int32):
+            return int(value)
+        else:
+            return value
 
-	return {k: _encode(v) for k, v in obj.iteritems()}
+    result = collections.OrderedDict()
+    for k in sorted(obj.keys()):
+        result[k] = _encode(obj[k])
+
+    return result
 
 
 def yield_files(criteria):
@@ -92,7 +98,6 @@ def yield_cf_files(targets):
     :rtype: generator
 
     """
-    yielded = 0
     for fpath in yield_files(targets):
         try:
             cf_file = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
@@ -103,3 +108,20 @@ def yield_cf_files(targets):
             # ... close file to prevent a proliferation of open file handles
             cf.close_one_file()
 
+
+def dump(output_dir, obj):
+    """Writes simulation metadata to file system.
+
+    :param str output_dir: Directory to which output will be written.
+    :param dict obj: Simulation metadata.
+
+    :returns: Path to written file.
+    :rtype: str
+
+    """
+    fname = "{}.json".format(unicode(uuid.uuid4()))
+    fpath = os.path.join(output_dir, fname)
+    with open(fpath, 'w') as fstream:
+        fstream.write(json.dumps(encode(obj), indent=4))
+
+    return fpath

@@ -27,7 +27,7 @@ def test_encode():
     """ES-DOC :: cdf2cim :: io :: encode to JSON safe dictionary.
 
     """
-    for obj in cdf2cim.find_simulations(_CRITERIA):
+    for obj in cdf2cim.find(_CRITERIA):
         assert isinstance(cdf2cim.io.encode(obj), dict)
 
 
@@ -36,7 +36,7 @@ def test_json_conversion_failure():
     """ES-DOC :: cdf2cim :: io :: verify that raw dictionary is not JSON encodeable.
 
     """
-    for obj in cdf2cim.find_simulations(_CRITERIA):
+    for obj in cdf2cim.find(_CRITERIA):
         assert json.dumps(obj)
 
 
@@ -44,5 +44,5 @@ def test_convert_to_json():
     """ES-DOC :: cdf2cim :: io :: verify encoded output is JSON encodeable.
 
     """
-    for obj in cdf2cim.find_simulations(_CRITERIA):
+    for obj in cdf2cim.find(_CRITERIA):
         assert json.dumps(cdf2cim.io.encode(obj))

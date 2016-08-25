@@ -26,24 +26,35 @@ __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
 __version__ = "0.1.2.0"
 
-
+from cdf2cim.io import dump as _dump
 from cdf2cim.mapper import execute as _map
 from cdf2cim.reducer import execute as _reduce
 
 
 
-def find_simulations(targets):
-    """Converts a set of NetCDF files to dictionaries representing simulation level metadata.
+def find(inputs):
+    """Returns simulation metadata extracted from a scan of NetCDF files.
 
-    :param list targets: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
+    :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
 
-    :returns: A generator yielding simulation level metadata.
+    :returns: A generator yielding simulation metadata.
     :rtype: generator
 
     """
-    # Perform reduce.
-    simulations, simulation_dates = _reduce(targets)
+    # Reduce inputs.
+    simulations, simulation_dates = _reduce(inputs)
 
-    # Yield mapped.
+    # Yield mapped outputs.
     for identifier, properties in simulations.iteritems():
         yield _map(identifier, properties, simulation_dates[identifier])
+
+
+def write(inputs, output_dir):
+    """Writes to file-system simulation metadata extracted from NetCDF files.
+
+    :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
+    :param str output_dir: Path to directory to which simulation metadata will be written.
+
+    """
+    for obj in find(inputs):
+        yield _dump(output_dir, obj)
