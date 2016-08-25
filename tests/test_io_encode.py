@@ -33,7 +33,7 @@ def test_encode():
 
 @nose.tools.raises(TypeError)
 def test_json_conversion_failure():
-    """ES-DOC :: cdf2cim :: io :: convert encoded to JSON.
+    """ES-DOC :: cdf2cim :: io :: verify that raw dictionary is not JSON encodeable.
 
     """
     for obj in cdf2cim.find_simulations(_CRITERIA):
@@ -41,7 +41,7 @@ def test_json_conversion_failure():
 
 
 def test_convert_to_json():
-    """ES-DOC :: cdf2cim :: io :: convert encoded to JSON.
+    """ES-DOC :: cdf2cim :: io :: verify encoded output is JSON encodeable.
 
     """
     for obj in cdf2cim.find_simulations(_CRITERIA):
