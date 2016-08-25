@@ -32,6 +32,5 @@ _ARGS.add_argument(
 # Set command line options.
 _ARGS = _ARGS.parse_args()
 
-
 # Write to file system results of scan.
 cdf2cim.write(_ARGS.input_dir, _ARGS.output_dir)
