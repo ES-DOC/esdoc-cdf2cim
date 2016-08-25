@@ -46,19 +46,28 @@ _ATTRIBUTES = sorted([
 
 
 def test_is_function():
-    """ES-DOC :: cdf2cim :: find_simulations :: postive Test :: cdf2cim supports find_simulations function
+    """ES-DOC :: cdf2cim :: find_simulations :: cdf2cim supports find_simulations function
 
     """
     assert inspect.isfunction(cdf2cim.find_simulations)
 
 
-
 def test_find():
-    """ES-DOC :: cdf2cim :: find_simulations :: positive test :: criteria = multiple files.
+    """ES-DOC :: cdf2cim :: find_simulations :: criteria = multiple files.
 
     """
-    for item in cdf2cim.find_simulations(_CRITERIA):
+    _assert_simulations(_CRITERIA, 1)
+
+
+def _assert_simulations(criteria, expected_length):
+    """Asserts a simulation item returned from find_simulations method.
+
+    """
+    total = 0
+    for item in cdf2cim.find_simulations(criteria):
         _assert_simulation(item)
+        total += 1
+    assert total == expected_length
 
 
 def _assert_simulation(obj):

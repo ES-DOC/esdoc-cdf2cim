@@ -24,9 +24,26 @@ __copyright__ = "Copyright 2016 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.1.1.0"
+__version__ = "0.1.2.0"
+
+
+from cdf2cim.mapper import execute as _map
+from cdf2cim.reducer import execute as _reduce
 
 
 
-from cdf2cim.find_files import find_files
-from cdf2cim.find_simulations import find_simulations
+def find_simulations(targets):
+    """Converts a set of NetCDF files to dictionaries representing simulation level metadata.
+
+    :param list targets: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
+
+    :returns: A generator yielding simulation level metadata.
+    :rtype: generator
+
+    """
+    # Perform reduce.
+    simulations, simulation_dates = _reduce(targets)
+
+    # Yield mapped.
+    for identifier, properties in simulations.iteritems():
+        yield _map(identifier, properties, simulation_dates[identifier])

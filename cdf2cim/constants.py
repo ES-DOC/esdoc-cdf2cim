@@ -22,6 +22,9 @@ MIP_ERA = {
     MIP_ERA_CMIP6
     }
 
+# Supported project codes.
+CMIP5 = 'CMIP5'
+CMIP6 = 'CMIP6'
 
 # --------------------------------------------------------------------
 # Dictionary of simple CMIP6 to CIM2 mappings. key = CMIP6 netCDF
@@ -109,7 +112,6 @@ CMIP5_TO_CIM2 = {
     'source_id'               : 'source',
     'realization'             : 'realization_index',
 }
-
 
 # --------------------------------------------------------------------
 # CMIP6 file properties from which a simulation id can be constructed
