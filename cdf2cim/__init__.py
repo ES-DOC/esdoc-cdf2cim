@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2016 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.1.2.0"
+__version__ = "0.1.3.0"
 
 from cdf2cim.io import dump as _dump
 from cdf2cim.mapper import execute as _map
