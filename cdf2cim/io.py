@@ -100,8 +100,9 @@ def yield_cf_files(targets):
     """
     for fpath in yield_files(targets):
         try:
+#            print  fpath
             cf_file = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
-        except OSError:
+        except (IOError, OSError):
             logger.log_warning("Non NetCDF file rejected: {}".format(fpath))
         else:
             yield cf_file

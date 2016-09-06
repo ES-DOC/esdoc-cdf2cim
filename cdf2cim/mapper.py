@@ -73,7 +73,7 @@ def _get_simulation_start_end_dates(dates):
 
     """
     if dates:
-        dates = cf.Data(list(set(dates)), dt=True).asreftime()
+        dates = cf.Data(list(set(dates)), dt=True)
         return str(dates.min().dtarray[0]), str(dates.max().dtarray[0])
 
     return (None, None)
