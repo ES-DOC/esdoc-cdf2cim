@@ -21,7 +21,7 @@ def execute(identifier, properties, dates):
     cim2_properties = properties[0].copy()
 
     # Find the start and end dates of the whole simulation
-    start_date, end_date = _get_simulation_start_end_dates(dates)
+    start_date, end_date = _get_simulation_start_end_dates(dates, cim2_properties['calendar'])
     if start_date:
         cim2_properties['start_time'] = start_date
         cim2_properties['end_time']   = end_date
@@ -68,12 +68,14 @@ def execute(identifier, properties, dates):
     return cim2_properties
 
 
-def _get_simulation_start_end_dates(dates):
+def _get_simulation_start_end_dates(dates, calendar):
     """Returns the start and end times of the simulation and return them as ISO8601-like strings.
 
     """
     if dates:
-        dates = cf.Data(list(set(dates)), dt=True)
+        date = sorted(set(dates))
+        units = cf.Units('days since '+str(dates[0]), calendar)
+        dates = cf.Data(dates, units, dt=True)
         return str(dates.min().dtarray[0]), str(dates.max().dtarray[0])
 
     return (None, None)
