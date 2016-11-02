@@ -29,33 +29,35 @@ def yield_parsed(targets):
 
     """
     for cf_file in io.yield_cf_files(targets):
-        identifier, properties, dates = parse(cf_file)
-        if identifier:
-            yield cf_file, identifier, properties, dates
+        for cf_field in cf_file:
+            identifier, properties, dates = parse(cf_field)
+            if identifier:
+                yield cf_field, identifier, properties, dates
+        # ... close file to prevent a proliferation of open file handles
+        cf.close_one_file()
 
+def parse(cf_field):
+    """Parses a CF field returning a simulation identifer, a set of CIM properties, & associated dates.
 
-def parse(cf_file):
-    """Parses a CF file returning a simulation identifer, a set of CIM properties, & associated dates.
-
-    :param cf.FieldList cf_file: A CF file to be mapped.
+    :param cf.Field cf_field: A CF field to be mapped.
 
     :returns: A 3 member tuple - (simulation identifer, CIM properties, simulation dates).
     :rtype: tuple
 
     """
     # Get the time coordinates & earliest/latest dates.
-    time_coords = cf_file.dim('T')
-    dates = _get_file_start_end_dates(time_coords)
+    time_coords = cf_field.dim('T')
+    dates = _get_field_start_end_dates(time_coords)
     if not dates:
         return None, None, None
 
     # Get the netCDF global attributes
-    global_attributes = cf_file.properties
+    global_attributes = cf_field.properties
 
     # Find out which mip-era file we have
     mip_era = _get_mip_era(global_attributes)
 
-    # Simply map file properties to CIM2 properties
+    # Simply map field properties to CIM2 properties
     cim2_properties = {}
 
     # Parse properties which only require a simple mapping
@@ -79,7 +81,7 @@ def parse(cf_file):
     return _get_simulation_id(cim2_properties), cim2_properties, dates
 
 
-def _get_file_start_end_dates(time_coords):
+def _get_field_start_end_dates(time_coords):
     """Returns earliest and latest date-time objects from a time coordinate.
 
     """
@@ -99,7 +101,7 @@ def _get_file_start_end_dates(time_coords):
     else:
         # In the absence of bounds, get the time span from the
         # time coordinates
-        dates = time_coords.subspace[index].dtarray
+        dates = time_coords.subspace[index].dtarray.flat
 
     return dates
 
