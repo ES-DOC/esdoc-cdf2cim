@@ -38,7 +38,7 @@ CMIP6 = 'CMIP6'
 # --------------------------------------------------------------------
 CMIP6_TO_CIM2 = {
     # CMIP6 attribute           CIM2 Simulation property
-    'activity_id'             : None,                    # E.g. 'CMIP, 'PMIP', 'LS3MIP LUMIP'
+    'activity_id'             : 'activity_id',           # E.g. 'CMIP, 'PMIP', 'LS3MIP LUMIP'
     'branch_method'           : None,                    # E.g. 'standard', 'none provided'
     'branch_time_in_child'    : None,                    # E.g. 365.0D0, 0.0D0
     'branch_time_in_parent'   : None,                    # E.g. 3650.0D0
