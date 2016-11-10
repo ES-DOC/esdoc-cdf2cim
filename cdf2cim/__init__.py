@@ -49,12 +49,17 @@ def find(inputs):
         yield _map(identifier, properties, simulation_dates[identifier])
 
 
-def write(inputs, output_dir):
+def write(inputs, output_dir, verbose=False):
     """Writes to file-system simulation metadata extracted from NetCDF files.
 
     :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
     :param str output_dir: Path to directory to which simulation metadata will be written.
 
     """
+    if verbose:
+        print 'Input netCDF files:'
+        print inputs
+        print '\nRaw simulation descriptions'
+
     for obj in find(inputs):
-        yield _dump(output_dir, obj)
+        yield _dump(output_dir, obj, verbose=verbose)
