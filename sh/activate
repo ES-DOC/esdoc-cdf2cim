@@ -1,0 +1,9 @@
+# Set home path
+export CDF2CIM_CLIENT_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export CDF2CIM_CLIENT_HOME="$( cd "$( dirname "${CDF2CIM_CLIENT_HOME[0]}" )" && pwd )"
+
+# Ensure shell scripts are executable
+chmod a+x $CDF2CIM_CLIENT_HOME/sh/*.sh
+
+# Aliases
+alias cdf2cim-pipify=$CDF2CIM_CLIENT_HOME/sh/pipify.sh
