@@ -15,7 +15,7 @@ import cdf2cim
 
 
 # Define command line arguments.
-_ARGS = argparse.ArgumentParser("ES-DOC NetCDF to CIM file manager.")
+_ARGS = argparse.ArgumentParser("ES-DOC netCDF to CIM file manager.")
 _ARGS.add_argument(
     "-i", "--in-dir",
     help="Path to a directory where CF files are to be found",
@@ -28,9 +28,16 @@ _ARGS.add_argument(
     dest="output_dir",
     type=str
     )
+_ARGS.add_argument(
+    "-v", "--verbose", 
+    help="increase output verbosity",
+    dest="verbose",
+    action="store_true"
+    )
 
 # Set command line options.
 _ARGS = _ARGS.parse_args()
 
 # Write to file system results of scan.
-cdf2cim.write(_ARGS.input_dir, _ARGS.output_dir)
+for i in cdf2cim.write(_ARGS.input_dir, _ARGS.output_dir, verbose=_ARGS.verbose): 
+    pass

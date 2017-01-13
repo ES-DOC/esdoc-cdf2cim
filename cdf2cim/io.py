@@ -110,7 +110,7 @@ def yield_cf_files(targets):
             cf.close_one_file()
 
 
-def dump(output_dir, obj):
+def dump(output_dir, obj, verbose=False):
     """Writes simulation metadata to file system.
 
     :param str output_dir: Directory to which output will be written.
@@ -125,4 +125,8 @@ def dump(output_dir, obj):
     with open(fpath, 'w') as fstream:
         fstream.write(json.dumps(encode(obj), indent=4))
 
+    if verbose:
+        print fpath
+
     return fpath
+
