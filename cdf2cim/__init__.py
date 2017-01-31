@@ -33,9 +33,9 @@ from cdf2cim.reducer import execute as _reduce
 
 
 def find(inputs):
-    """Returns simulation metadata extracted from a scan of NetCDF files.
+    """Returns simulation metadata extracted from a scan of netCDF files.
 
-    :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
+    :param list inputs: File and/or directory pointers to netCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
 
     :returns: A generator yielding simulation metadata.
     :rtype: generator
@@ -49,17 +49,20 @@ def find(inputs):
         yield _map(identifier, properties, simulation_dates[identifier])
 
 
-def write(inputs, output_dir, verbose=False):
-    """Writes to file-system simulation metadata extracted from NetCDF files.
+def write(inputs, output_dir, name='md5', overwrite=True, verbose=False):
+    """Writes to file-system simulation metadata extracted from netCDF files.
 
-    :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
+    :param list inputs: File and/or directory pointers to netCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
     :param str output_dir: Path to directory to which simulation metadata will be written.
+    :param str name: Style of output file name: 'md5' for md5 (not unique), 'uuid' for UUID (different every time)
+    :param bool overwrite: If True then overwrite an existing file.
+    :param bool verbose: If True then report to STDOUT
 
     """
     if verbose:
         print 'Input netCDF files:'
         print inputs
-        print '\nRaw simulation descriptions'
+        print '\nRaw simulation descriptions:'
 
     for obj in find(inputs):
-        yield _dump(output_dir, obj, verbose=verbose)
+        yield _dump(output_dir, obj, name=name, overwrite=overwrite, verbose=verbose)

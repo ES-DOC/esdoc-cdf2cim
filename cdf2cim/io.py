@@ -14,6 +14,7 @@ import collections
 import json
 import os
 import uuid
+import hashlib
 
 import cf
 import numpy
@@ -103,30 +104,50 @@ def yield_cf_files(targets):
 #            print  fpath
             cf_file = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
         except (IOError, OSError):
-            logger.log_warning("Non NetCDF file rejected: {}".format(fpath))
+            logger.log_warning("Non netCDF file rejected: {}".format(fpath))
         else:
             yield cf_file
             # ... close file to prevent a proliferation of open file handles
             cf.close_one_file()
 
 
-def dump(output_dir, obj, verbose=False):
+def dump(output_dir, obj, name='md5', overwrite=False, verbose=False):
     """Writes simulation metadata to file system.
 
     :param str output_dir: Directory to which output will be written.
     :param dict obj: Simulation metadata.
+    :param str name: Style of output file name: 'md5' for md5 (not unique), 'uuid' for UUID.
+    :param bool overwrite: If True then overwrite an existing file.
+    :param bool verbose: If True, print ouput file to STDOUT
 
     :returns: Path to written file.
     :rtype: str
 
     """
-    fname = "{}.json".format(unicode(uuid.uuid4()))
-    fpath = os.path.join(output_dir, fname)
-    with open(fpath, 'w') as fstream:
-        fstream.write(json.dumps(encode(obj), indent=4))
+    encoded_obj = encode(obj)
+    
+    if name == 'uuid':
+        basename = unicode(uuid.uuid4())
+    elif name == 'md5':
+        basename = unicode(hashlib.md5(json.dumps(encoded_obj)).hexdigest())
 
-    if verbose:
+    fname = "{}.json".format(basename)
+    
+    fpath = os.path.join(output_dir, fname)
+
+    if os.path.isfile(fpath):
+        if not overwrite:
+            if verbose:
+                print fpath, '(not recreated)'
+            return fpath
+        elif verbose:
+            print fpath, '(recreated)'
+    elif verbose:
         print fpath
+
+                
+    with open(fpath, 'w') as fstream:
+        fstream.write(json.dumps(encoded_obj, indent=4))
 
     return fpath
 
