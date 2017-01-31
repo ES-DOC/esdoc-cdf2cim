@@ -32,7 +32,7 @@ def encode(obj):
     :rtype: dict
 
     """
-    def _encode(value):
+    def _encode(key, value):
         """Encodes a value.
 
         """
@@ -40,12 +40,14 @@ def encode(obj):
             return float(value)
         elif isinstance(value, numpy.int32):
             return int(value)
+        elif key.endswith("_index"):
+            return int(value)
         else:
             return value
 
     result = collections.OrderedDict()
     for k in sorted(obj.keys()):
-        result[k] = _encode(obj[k])
+        result[k] = _encode(k, obj[k])
 
     return result
 

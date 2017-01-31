@@ -48,7 +48,7 @@ CMIP6_TO_CIM2 = {
     'creation_date'           : None,
     'data_specs_version'      : None,
     'experiment'              : None,                    # E.g. 'pre-industrial control',  'abrupt quadrupling of CO2'
-    'experiment_id'           : 'ran_for_experiments',   # E.g. 'historical', 'abrupt4xCO2'
+    'experiment_id'           : 'experiment_id',         # E.g. 'historical', 'abrupt4xCO2'
     'external_variables'      : None,                    # E.g. 'areacello'
     'forcing_index'           : 'forcing_index',         # E.g. 2
     'frequency'               : None,                    # E.g. 'day'
@@ -59,7 +59,7 @@ CMIP6_TO_CIM2 = {
     'history'                 : None,
     'initialization_index'    : 'initialization_index',  # E.g. 1
     'institution'             : None,                    # E.g. 'Meteorological Research Institute'
-    'institution_id'          : 'institution',           # E.g. 'IPSL'
+    'institution_id'          : 'institution_id',        # E.g. 'IPSL'
     'license'                 : None,
     'mip_era'                 : 'mip_era',               # E.g. 'CMIP6', 'CMIP7'
     'parent_activity_id'      : None,                    # E.g. 'CMIP'
@@ -73,11 +73,11 @@ CMIP6_TO_CIM2 = {
     'realization_index'       : 'realization_index',     # E.g. 5
     'realm'                   : None,                    # E.g. 'atmos', 'ocean', 'atmosChem atmos'
     'references'              : 'references',
-    'source'                  : 'source',                # E.g. 'GFDL CM2.1: cycle 2.1.14'
+    'source'                  : 'source_id',             # E.g. 'GFDL CM2.1: cycle 2.1.14'
     'source_id'               : None,                    # E.g. 'GFDL-CM2-1'
     'source_type'             : None,                    # E.g. 'AGCM', 'OGCM', 'AOGCM', 'ISM', 'AOGCM ISM'
     'sub_experiment'          : None,
-    'sub_experiment_id'       : 'sub_experiment',        # E.g. 's1960', 's1965', 'none'
+    'sub_experiment_id'       : 'sub_experiment_id',     # E.g. 's1960', 's1965', 'none'
     'table_id'                : None,                    # E.g. 'Amon'
     'title'                   : None,
     'tracking_id'             : None,

@@ -58,7 +58,7 @@ def write(inputs, output_dir):
 
     """
     for obj in find(inputs):
-        yield _dump(output_dir, obj)
+        _dump(output_dir, obj)
 
 
 def publish(inputs, output_dir=None):
@@ -68,5 +68,5 @@ def publish(inputs, output_dir=None):
     :param str output_dir: Path to directory to which simulation metadata will be written.
 
     """
-    for target in write(inputs, output_dir):
-        _publish(target)
+    for obj in find(inputs):
+        _publish(_dump(output_dir, obj))

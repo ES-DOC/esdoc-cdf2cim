@@ -19,6 +19,8 @@ from cdf2cim.file_io import encode
 from cdf2cim.exceptions import WebServiceConnectionError
 from cdf2cim.exceptions import WebServiceProcessingError
 
+
+
 # Default web-service host.
 _DEFAULT_WS_HOST = r"https://cdf2cim.ws.es-doc.org"
 
@@ -30,7 +32,6 @@ _ENV_VAR_GH_USER = "CDF2CIM_CLIENT_GITHUB_USER"
 
 # Environment variable: GitHub access token.
 _ENV_VAR_GH_ACCESS_TOKEN = "CDF2CIM_CLIENT_GITHUB_ACCESS_TOKEN"
-
 
 
 def execute(target):
