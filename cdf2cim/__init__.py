@@ -24,11 +24,12 @@ __copyright__ = "Copyright 2016 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.1.3.0"
+__version__ = "0.1.4.0"
 
-from cdf2cim.io import dump as _dump
+from cdf2cim.file_io import dump as _dump
 from cdf2cim.mapper import execute as _map
 from cdf2cim.reducer import execute as _reduce
+from cdf2cim.publisher import execute as _publish
 
 
 
@@ -49,17 +50,23 @@ def find(inputs):
         yield _map(identifier, properties, simulation_dates[identifier])
 
 
-def write(inputs, output_dir, verbose=False):
+def write(inputs, output_dir):
     """Writes to file-system simulation metadata extracted from NetCDF files.
 
     :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
     :param str output_dir: Path to directory to which simulation metadata will be written.
 
     """
-    if verbose:
-        print 'Input netCDF files:'
-        print inputs
-        print '\nRaw simulation descriptions'
-
     for obj in find(inputs):
-        yield _dump(output_dir, obj, verbose=verbose)
+        yield _dump(output_dir, obj)
+
+
+def publish(inputs, output_dir=None):
+    """Publishes to remote ES-DOC cdf2cim web-service.
+
+    :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
+    :param str output_dir: Path to directory to which simulation metadata will be written.
+
+    """
+    for target in write(inputs, output_dir):
+        _publish(target)

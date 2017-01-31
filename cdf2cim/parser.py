@@ -15,7 +15,7 @@ import re
 import cf
 
 from cdf2cim import constants
-from cdf2cim import io
+from cdf2cim.file_io import yield_cf_files
 
 
 
@@ -28,13 +28,14 @@ def yield_parsed(targets):
     :rtype: generator
 
     """
-    for cf_file in io.yield_cf_files(targets):
+    for cf_file in yield_cf_files(targets):
         for cf_field in cf_file:
             identifier, properties, dates = parse(cf_field)
             if identifier:
                 yield cf_field, identifier, properties, dates
         # ... close file to prevent a proliferation of open file handles
         cf.close_one_file()
+
 
 def parse(cf_field):
     """Parses a CF field returning a simulation identifer, a set of CIM properties, & associated dates.

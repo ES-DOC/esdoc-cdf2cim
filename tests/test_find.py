@@ -11,38 +11,11 @@
 
 """
 import inspect
-import os
 
 import cdf2cim
 from cdf2cim import constants
+from utils import *
 
-
-
-# Test criteria.
-_CRITERIA = os.path.join(os.path.dirname(__file__), "test-data")
-
-# Set of expected simulation attributes.
-_ATTRIBUTES = sorted([
-    'parent_initialization_index',
-    'parent_experiment_id',
-    'start_time',
-    'parent_realization_index',
-    'references',
-    'mip_era',
-    'physics_index',
-    'calendar',
-    'branch_time_in_parent',
-    'institution_id',
-    'initialization_index',
-    'realization_index',
-    'source',
-    'contact',
-    'end_time',
-    'experiment_id',
-    'source_id',
-    'forcing',
-    'parent_physics_index'
-    ])
 
 
 def test_is_function():
@@ -52,30 +25,37 @@ def test_is_function():
     assert inspect.isfunction(cdf2cim.find)
 
 
-def test_find():
-    """ES-DOC :: cdf2cim :: find :: criteria = multiple files.
+def test_find_cmip5():
+    """ES-DOC :: cdf2cim :: find :: cmip5.
 
     """
-    _assert_simulations(_CRITERIA, 1)
+    _assert_simulations(CMIP5_NETCDF_DIR, 2, SAMPLE_OUTPUT_CMIP5.keys())
 
 
-def _assert_simulations(criteria, expected_length):
+def test_find_cmip6():
+    """ES-DOC :: cdf2cim :: find :: cmip6.
+
+    """
+    _assert_simulations(CMIP6_NETCDF_DIR, 1, SAMPLE_OUTPUT_CMIP6.keys())
+
+
+def _assert_simulations(criteria, expected_length, expected_fields):
     """Asserts a simulation item returned from find method.
 
     """
     total = 0
     for item in cdf2cim.find(criteria):
-        _assert_simulation(item)
+        _assert_simulation(item, expected_fields)
         total += 1
-    assert total == expected_length
+    assert total == expected_length, total
 
 
-def _assert_simulation(obj):
+def _assert_simulation(obj, expected_fields):
     """Asserts a simulation item returned from find method.
 
     """
     assert isinstance(obj, dict)
-    for key in _ATTRIBUTES:
+    for key in expected_fields:
         assert key in obj
     assert obj['mip_era'] in constants.MIP_ERA
-    assert cdf2cim.io.encode(obj)
+    assert cdf2cim.file_io.encode(obj)

@@ -100,7 +100,6 @@ def yield_cf_files(targets):
     """
     for fpath in yield_files(targets):
         try:
-#            print  fpath
             cf_file = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
         except (IOError, OSError):
             logger.log_warning("Non NetCDF file rejected: {}".format(fpath))
@@ -110,7 +109,7 @@ def yield_cf_files(targets):
             cf.close_one_file()
 
 
-def dump(output_dir, obj, verbose=False):
+def dump(output_dir, obj):
     """Writes simulation metadata to file system.
 
     :param str output_dir: Directory to which output will be written.
@@ -124,9 +123,6 @@ def dump(output_dir, obj, verbose=False):
     fpath = os.path.join(output_dir, fname)
     with open(fpath, 'w') as fstream:
         fstream.write(json.dumps(encode(obj), indent=4))
-
-    if verbose:
-        print fpath
 
     return fpath
 

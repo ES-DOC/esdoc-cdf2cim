@@ -4,5 +4,4 @@ nose
 numpy
 netCDF4
 psutil
-
-
+requests

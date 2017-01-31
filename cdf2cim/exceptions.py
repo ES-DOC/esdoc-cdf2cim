@@ -22,3 +22,25 @@ class InvalidFileSearchCriteria(Exception):
         super(InvalidFileSearchCriteria, self).__init__(
             "NETCDF FILE SEARCH CRITERIA ARE INVALID :: {}".format(criteria)
             )
+
+
+class WebServiceConnectionError(Exception):
+    """Raised if web-service connection fails.
+
+    """
+    def __init__(self):
+        """Instance constructor.
+
+        """
+        super(WebServiceConnectionError, self).__init__("WEB-SERVICE CONNECTION FAILURE")
+
+
+class WebServiceProcessingError(Exception):
+    """Raised if web-service processing fails.
+
+    """
+    def __init__(self, http_status_code, err):
+        """Instance constructor.
+
+        """
+        super(WebServiceProcessingError, self).__init__("WEB-SERVICE ERROR: {} :: {}".format(http_status_code, err))
