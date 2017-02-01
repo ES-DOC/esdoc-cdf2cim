@@ -12,7 +12,7 @@
 """
 import collections
 
-from cdf2cim import cf_parser
+from cdf2cim import parser
 
 
 
@@ -39,7 +39,7 @@ def execute(targets):
     # a group belong to the same simulation
     # ----------------------------------------------------------------
     # For each CF field in this input file ...
-    for _, identifier, cim2_properties, dates in cf_parser.yield_parsed(targets):
+    for _, identifier, cim2_properties, dates in parser.yield_parsed(targets):
         cim2_properties.pop(None, None)
     	simulation_dates[identifier].extend(dates)
         simulations[identifier].append(cim2_properties)

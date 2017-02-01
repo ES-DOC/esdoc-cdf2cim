@@ -24,11 +24,12 @@ __copyright__ = "Copyright 2016 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.1.3.0"
+__version__ = "0.1.4.0"
 
-from cdf2cim.io import dump as _dump
+from cdf2cim.file_io import dump as _dump
 from cdf2cim.mapper import execute as _map
 from cdf2cim.reducer import execute as _reduce
+from cdf2cim.publisher import execute as _publish
 
 
 
@@ -65,4 +66,14 @@ def write(inputs, output_dir, name='md5', overwrite=True, verbose=False):
         print '\nRaw simulation descriptions:'
 
     for obj in find(inputs):
-        yield _dump(output_dir, obj, name=name, overwrite=overwrite, verbose=verbose)
+        _dump(output_dir, obj, name=name, overwrite=overwrite, verbose=verbose)
+
+def publish(inputs, output_dir=None):
+    """Publishes to remote ES-DOC cdf2cim web-service.
+
+    :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
+    :param str output_dir: Path to directory to which simulation metadata will be written.
+
+    """
+    for obj in find(inputs):
+        _publish(_dump(output_dir, obj))

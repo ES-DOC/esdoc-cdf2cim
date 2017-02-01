@@ -33,7 +33,7 @@ def encode(obj):
     :rtype: dict
 
     """
-    def _encode(value):
+    def _encode(key, value):
         """Encodes a value.
 
         """
@@ -41,12 +41,14 @@ def encode(obj):
             return float(value)
         elif isinstance(value, numpy.int32):
             return int(value)
+        elif key.endswith("_index"):
+            return int(value)
         else:
             return value
 
     result = collections.OrderedDict()
     for k in sorted(obj.keys()):
-        result[k] = _encode(obj[k])
+        result[k] = _encode(k, obj[k])
 
     return result
 
@@ -101,7 +103,6 @@ def yield_cf_files(targets):
     """
     for fpath in yield_files(targets):
         try:
-#            print  fpath
             cf_file = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
         except (IOError, OSError):
             logger.log_warning("Non netCDF file rejected: {}".format(fpath))

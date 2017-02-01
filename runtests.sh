@@ -9,7 +9,7 @@ rm -rf $CDF2CIM_DIR/tests/test-output
 mkdir $CDF2CIM_DIR/tests/test-output
 
 # Extend python path.
-export PYTHONPATH=PYTHONPATH:$CDF2CIM_DIR
+export PYTHONPATH=$PYTHONPATH:$CDF2CIM_DIR
 
 # Run test suite.
 nosetests -v -s tests

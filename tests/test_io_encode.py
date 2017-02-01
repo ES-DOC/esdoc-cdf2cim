@@ -16,33 +16,34 @@ import os
 import nose
 
 import cdf2cim
+from utils import *
 
 
 
 # Test criteria.
-_CRITERIA = os.path.join(os.path.dirname(__file__), "test-data")
+_NETCDF_DIR = os.path.join(os.path.dirname(__file__), "test-data")
 
 
 def test_encode():
     """ES-DOC :: cdf2cim :: io :: encode to JSON safe dictionary.
 
     """
-    for obj in cdf2cim.find(_CRITERIA):
-        assert isinstance(cdf2cim.io.encode(obj), dict)
+    for obj in cdf2cim.find(NETCDF_DIR):
+        assert isinstance(cdf2cim.file_io.encode(obj), dict)
 
 
 @nose.tools.raises(TypeError)
 def test_json_conversion_failure():
-    """ES-DOC :: cdf2cim :: io :: verify that raw dictionary is not JSON encodeable.
+    """ES-DOC :: cdf2cim :: io :: raw dictionary is not JSON encodeable.
 
     """
-    for obj in cdf2cim.find(_CRITERIA):
+    for obj in cdf2cim.find(NETCDF_DIR):
         assert json.dumps(obj)
 
 
 def test_convert_to_json():
-    """ES-DOC :: cdf2cim :: io :: verify encoded output is JSON encodeable.
+    """ES-DOC :: cdf2cim :: io :: encoded output is JSON encodeable.
 
     """
-    for obj in cdf2cim.find(_CRITERIA):
-        assert json.dumps(cdf2cim.io.encode(obj))
+    for obj in cdf2cim.find(NETCDF_DIR):
+        assert json.dumps(cdf2cim.file_io.encode(obj))

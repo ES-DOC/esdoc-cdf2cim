@@ -17,57 +17,74 @@ import cf
 import numpy
 
 import cdf2cim
+from utils import *
 
-
-
-# Pointers to various test data.
-_TEST_DATA = os.path.join(os.path.dirname(__file__), "test-data")
-_DIR = os.path.join(_TEST_DATA, 'cmip5')
-_DIRS = [os.path.join(_TEST_DATA, 'cmip5'), os.path.join(_TEST_DATA, 'cmip6')]
-_FILE = os.path.join(_DIR, 'tas_2005.nc')
-_FILES = [os.path.join(_DIR, i) for i in os.listdir(_DIR)]
 
 
 def test_is_function():
     """ES-DOC :: cdf2cim :: yield_simulation_info :: cdf2cim supports target function
 
     """
-    assert inspect.isfunction(cdf2cim.cf_parser.yield_parsed)
+    assert inspect.isfunction(cdf2cim.parser.yield_parsed)
 
 
-def test_single_file():
-    """ES-DOC :: cdf2cim :: yield_simulation_info :: criteria = a single file.
-
-    """
-    _assert_simulations(_FILE, 1)
-
-
-def test_multiple_files():
-    """ES-DOC :: cdf2cim :: yield_simulation_info :: criteria = multiple files.
+def test_cmip5_single_file():
+    """ES-DOC :: cdf2cim :: yield_simulation_info :: cmip5 :: criteria = a single file.
 
     """
-    _assert_simulations(_FILES, 6)
+    _assert_simulations(CMIP5_NETCDF_FILE, 1)
 
 
-def test_single_directory():
-    """ES-DOC :: cdf2cim :: yield_simulation_info :: criteria = a single directory.
+def test_cmip5_multiple_files():
+    """ES-DOC :: cdf2cim :: yield_simulation_info :: cmip5 :: criteria = multiple files.
 
     """
-    _assert_simulations(_DIR, 6)
+    _assert_simulations(CMIP5_NETCDF_FILES, CMIP5_NETCDF_FILE_COUNT)
+
+
+def test_cmip5_single_directory():
+    """ES-DOC :: cdf2cim :: yield_simulation_info :: cmip5 :: criteria = a single directory.
+
+    """
+    _assert_simulations(CMIP5_NETCDF_DIR, CMIP5_NETCDF_FILE_COUNT)
+
+
+def test_cmip6_single_file():
+    """ES-DOC :: cdf2cim :: yield_simulation_info :: cmip6 :: criteria = a single file.
+
+    """
+    _assert_simulations(CMIP6_NETCDF_FILE, 1)
+
+
+def test_cmip6_multiple_files():
+    """ES-DOC :: cdf2cim :: yield_simulation_info :: cmip6 :: criteria = multiple files.
+
+    """
+    _assert_simulations(CMIP6_NETCDF_FILES, CMIP6_NETCDF_FILE_COUNT)
+
+
+def test_cmip6_single_directory():
+    """ES-DOC :: cdf2cim :: yield_simulation_info :: cmip6 :: criteria = a single directory.
+
+    """
+    _assert_simulations(CMIP6_NETCDF_DIR, CMIP6_NETCDF_FILE_COUNT)
 
 
 def test_multiple_directories():
     """ES-DOC :: cdf2cim :: yield_simulation_info :: criteria = multiple directories.
 
     """
-    _assert_simulations(_DIRS, 6)
+    _assert_simulations(ALL_NETCDF_DIRS, ALL_NETCDF_FILE_COUNT)
 
 
 def test_mixed_criteria():
     """ES-DOC :: cdf2cim :: yield_simulation_info :: criteria = single file, single directory.
 
     """
-    _assert_simulations([_FILE, _DIR], 6)
+    _assert_simulations(
+        [CMIP5_NETCDF_FILE, CMIP6_NETCDF_DIR],
+        CMIP6_NETCDF_FILE_COUNT + 1
+        )
 
 
 def _assert_simulations(criteria, expected_length):
@@ -75,7 +92,7 @@ def _assert_simulations(criteria, expected_length):
 
     """
     total = 0
-    for item in cdf2cim.cf_parser.yield_parsed(criteria):
+    for item in cdf2cim.parser.yield_parsed(criteria):
         _assert_simulation(item)
         total += 1
     assert total == expected_length

@@ -14,14 +14,7 @@ import inspect
 import os
 
 import cdf2cim
-from cdf2cim import constants
-
-
-# Test inputs.
-_INPUTS = os.path.join(os.path.dirname(__file__), "test-data")
-
-# Test output directory.
-_OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "test-output")
+from utils import *
 
 
 
@@ -36,13 +29,12 @@ def test_output_dir():
     """ES-DOC :: cdf2cim :: write :: test output directory exists.
 
     """
-    assert os.path.exists(_OUTPUT_DIR)
-
+    assert os.path.exists(TEST_OUTPUT_DIR)
 
 
 def test_write():
     """ES-DOC :: cdf2cim :: write :: test writing output to file system.
 
     """
-    for fpath in cdf2cim.write(_INPUTS, _OUTPUT_DIR):
+    for fpath in cdf2cim.write(NETCDF_DIR, TEST_OUTPUT_DIR):
         assert os.path.isfile(fpath)
