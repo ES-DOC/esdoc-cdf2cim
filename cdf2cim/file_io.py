@@ -20,6 +20,7 @@ import numpy
 
 from cdf2cim import exceptions
 from cdf2cim import logger
+from cdf2cim import options
 
 
 
@@ -111,10 +112,9 @@ def yield_cf_files(targets):
             cf.close_one_file()
 
 
-def dump(output_dir, obj):
+def dump(obj):
     """Writes simulation metadata to file system.
 
-    :param str output_dir: Directory to which output will be written.
     :param dict obj: Simulation metadata.
 
     :returns: Path to written file.
@@ -122,9 +122,8 @@ def dump(output_dir, obj):
 
     """
     fname = "{}.json".format(unicode(uuid.uuid4()))
-    fpath = os.path.join(output_dir, fname)
+    fpath = os.path.join(options.IO_DIR, fname)
     with open(fpath, 'w') as fstream:
         fstream.write(json.dumps(encode(obj), indent=4))
 
     return fpath
-

@@ -8,4 +8,4 @@ chmod a+x $CDF2CIM_CLIENT_HOME/sh/*.sh
 # Aliases
 alias cdf2cim-client-pipify=$CDF2CIM_CLIENT_HOME/sh/pipify.sh
 alias cdf2cim-client-publish=$CDF2CIM_CLIENT_HOME/sh/publish.sh
-alias cdf2cim-client-write=$CDF2CIM_CLIENT_HOME/sh/write.sh
+alias cdf2cim-client-scan=$CDF2CIM_CLIENT_HOME/sh/scan.sh

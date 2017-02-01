@@ -26,10 +26,13 @@ __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
 __version__ = "0.1.4.0"
 
+import glob
+
 from cdf2cim.file_io import dump as _dump
 from cdf2cim.mapper import execute as _map
-from cdf2cim.reducer import execute as _reduce
+from cdf2cim.options import IO_DIR
 from cdf2cim.publisher import execute as _publish
+from cdf2cim.reducer import execute as _reduce
 
 
 
@@ -50,23 +53,26 @@ def find(inputs):
         yield _map(identifier, properties, simulation_dates[identifier])
 
 
-def write(inputs, output_dir):
-    """Writes to file-system simulation metadata extracted from NetCDF files.
-
-    :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
-    :param str output_dir: Path to directory to which simulation metadata will be written.
-
-    """
-    for obj in find(inputs):
-        _dump(output_dir, obj)
-
-
-def publish(inputs, output_dir=None):
+def publish():
     """Publishes to remote ES-DOC cdf2cim web-service.
 
+    :returns: List of publishing errors.
+    :rtype: list
+
+    """
+    files = glob.iglob("{}/*.json".format(IO_DIR))
+
+    return tuple(i for i in [(j, _publish(j)) for j in files] if i[1] is not None)
+
+
+def scan(inputs):
+    """Scan NetCDF files and cdf2cim specific metadata to file-system.
+
     :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
-    :param str output_dir: Path to directory to which simulation metadata will be written.
+
+    :returns: Tuple of written cdf2cim formatted files.
+    :rtype: tuple
 
     """
     for obj in find(inputs):
-        _publish(_dump(output_dir, obj))
+        _dump(obj)

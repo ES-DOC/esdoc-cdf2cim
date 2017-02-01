@@ -7,8 +7,8 @@ source $CDF2CIM_CLIENT_HOME/sh/utils.sh
 main()
 {
 	export PYTHONPATH=$CDF2CIM_CLIENT_HOME:PYTHONPATH
-	python $CDF2CIM_CLIENT_HOME/cdf2cim --action=write -i $1 -o $2
+	python $CDF2CIM_CLIENT_HOME/sh/scan.py -i $1
 }
 
 # Invoke entry point.
-main $1 $2
+main $1
