@@ -43,6 +43,3 @@ with open(os.path.join(SAMPLE_OUTPUT_DIR, 'cmip5.json'), 'r') as _fstream:
     SAMPLE_OUTPUT_CMIP5 = json.loads(_fstream.read())
 with open(os.path.join(SAMPLE_OUTPUT_DIR, 'cmip6.json'), 'r') as _fstream:
     SAMPLE_OUTPUT_CMIP6 = json.loads(_fstream.read())
-
-# Test output.
-TEST_OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "test-output")

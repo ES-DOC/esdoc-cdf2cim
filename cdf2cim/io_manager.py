@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: io_manager.py
+.. module:: io.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Enapsulates package IO operations.
@@ -14,6 +14,7 @@ import collections
 import json
 import os
 import uuid
+import hashlib
 
 import cf
 import numpy
@@ -105,27 +106,41 @@ def yield_cf_files(targets):
         try:
             cf_file = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
         except (IOError, OSError):
-            logger.log_warning("Non NetCDF file rejected: {}".format(fpath))
+            logger.log_warning("Non netCDF file rejected: {}".format(fpath))
         else:
             yield cf_file
             # ... close file to prevent a proliferation of open file handles
             cf.close_one_file()
 
 
-def dump(obj):
+def dump(obj, name='md5', overwrite=False):
     """Writes simulation metadata to file system.
 
     :param dict obj: Simulation metadata.
+    :param str name: Style of output file name: 'md5' for md5 (not unique), 'uuid' for UUID.
+    :param bool overwrite: If True then overwrite an existing file.
 
     :returns: Path to written file.
     :rtype: str
 
     """
+    # Ensure IO directory exists.
     if not os.path.isdir(IO_DIR):
         os.mkdir(IO_DIR)
-    fname = "{}.json".format(unicode(uuid.uuid4()))
-    fpath = os.path.join(IO_DIR, fname)
-    with open(fpath, 'w') as fstream:
-        fstream.write(json.dumps(encode(obj), indent=4))
+
+    # Convert metadata to JSON.
+    metadata = json.dumps(encode(obj), indent=4)
+
+    # Set output file name.
+    if name == 'md5':
+        fname = hashlib.md5(metadata).hexdigest()
+    else:
+        fname = uuid.uuid4()
+
+    # Write.
+    fpath = os.path.join(IO_DIR, u"{}.json".format(unicode(fname)))
+    if not os.path.isfile(fpath) or overwrite:
+        with open(fpath, 'w') as fstream:
+            fstream.write(metadata)
 
     return fpath
