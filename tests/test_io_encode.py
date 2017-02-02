@@ -29,7 +29,7 @@ def test_encode():
 
     """
     for obj in cdf2cim.find(NETCDF_DIR):
-        assert isinstance(cdf2cim.file_io.encode(obj), dict)
+        assert isinstance(cdf2cim.io_manager.encode(obj), dict)
 
 
 @nose.tools.raises(TypeError)
@@ -46,4 +46,4 @@ def test_convert_to_json():
 
     """
     for obj in cdf2cim.find(NETCDF_DIR):
-        assert json.dumps(cdf2cim.file_io.encode(obj))
+        assert json.dumps(cdf2cim.io_manager.encode(obj))

@@ -47,7 +47,7 @@ def _assert_simulations(criteria, expected_length, expected_fields):
     for item in cdf2cim.find(criteria):
         _assert_simulation(item, expected_fields)
         total += 1
-    assert total == expected_length, total
+    assert total == expected_length
 
 
 def _assert_simulation(obj, expected_fields):
@@ -55,7 +55,7 @@ def _assert_simulation(obj, expected_fields):
 
     """
     assert isinstance(obj, dict)
-    for key in expected_fields:
-        assert key in obj
     assert obj['mip_era'] in constants.MIP_ERA
-    assert cdf2cim.file_io.encode(obj)
+    assert cdf2cim.io_manager.encode(obj)
+    for key in expected_fields:
+        assert key in obj, (key, expected_fields)

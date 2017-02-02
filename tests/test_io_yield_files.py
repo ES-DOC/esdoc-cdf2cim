@@ -23,7 +23,7 @@ def test_is_function():
     """ES-DOC :: cdf2cim :: yield_files :: cdf2cim supports target function
 
     """
-    assert inspect.isfunction(cdf2cim.file_io.yield_files)
+    assert inspect.isfunction(cdf2cim.io_manager.yield_files)
 
 
 def test_invalid_criteria():
@@ -40,10 +40,10 @@ def test_invalid_criteria():
             os.path.join(NETCDF_DIR, 'xxx')
         }:
         try:
-            cdf2cim.file_io.yield_files(criteria)
+            cdf2cim.io_manager.yield_files(criteria)
         except cdf2cim.exceptions.InvalidFileSearchCriteria:
             try:
-                cdf2cim.file_io.yield_files([criteria])
+                cdf2cim.io_manager.yield_files([criteria])
             except cdf2cim.exceptions.InvalidFileSearchCriteria:
                 pass
 
@@ -112,7 +112,7 @@ def _assert_files(criteria, expected):
 
     """
     actual = set()
-    for item in cdf2cim.file_io.yield_files(criteria):
+    for item in cdf2cim.io_manager.yield_files(criteria):
         _assert_file(item)
         actual.add(item)
     assert actual == set(expected)

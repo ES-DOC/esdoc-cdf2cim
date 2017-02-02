@@ -28,7 +28,7 @@ __version__ = "0.1.4.0"
 
 import glob
 
-from cdf2cim.file_io import dump as _dump
+from cdf2cim.io_manager import dump as _dump
 from cdf2cim.mapper import execute as _map
 from cdf2cim.options import IO_DIR
 from cdf2cim.publisher import execute as _publish
@@ -74,5 +74,4 @@ def scan(inputs):
     :rtype: tuple
 
     """
-    for obj in find(inputs):
-        _dump(obj)
+    return tuple(_dump(i) for i in find(inputs))

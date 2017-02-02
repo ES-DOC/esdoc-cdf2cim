@@ -15,7 +15,7 @@ import re
 import cf
 
 from cdf2cim import constants
-from cdf2cim.file_io import yield_cf_files
+from cdf2cim.io_manager import yield_cf_files
 
 
 

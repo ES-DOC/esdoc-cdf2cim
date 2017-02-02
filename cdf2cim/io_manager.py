@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: io.py
+.. module:: io_manager.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Enapsulates package IO operations.
@@ -20,7 +20,7 @@ import numpy
 
 from cdf2cim import exceptions
 from cdf2cim import logger
-from cdf2cim import options
+from cdf2cim.options import IO_DIR
 
 
 
@@ -121,8 +121,10 @@ def dump(obj):
     :rtype: str
 
     """
+    if not os.path.isdir(IO_DIR):
+        os.mkdir(IO_DIR)
     fname = "{}.json".format(unicode(uuid.uuid4()))
-    fpath = os.path.join(options.IO_DIR, fname)
+    fpath = os.path.join(IO_DIR, fname)
     with open(fpath, 'w') as fstream:
         fstream.write(json.dumps(encode(obj), indent=4))
 

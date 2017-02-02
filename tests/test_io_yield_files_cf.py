@@ -24,7 +24,7 @@ def test_is_function():
     """ES-DOC :: cdf2cim :: yield_cf_files :: cdf2cim supports target function
 
     """
-    assert inspect.isfunction(cdf2cim.file_io.yield_cf_files)
+    assert inspect.isfunction(cdf2cim.io_manager.yield_cf_files)
 
 
 def test_cmip5_single_file():
@@ -91,7 +91,7 @@ def _assert_cf_files(criteria, expected_length):
 
     """
     total = 0
-    for item in cdf2cim.file_io.yield_cf_files(criteria):
+    for item in cdf2cim.io_manager.yield_cf_files(criteria):
         _assert_cf_file(item)
         total += 1
     assert total == expected_length
