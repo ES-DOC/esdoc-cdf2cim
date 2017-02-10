@@ -11,7 +11,7 @@
 
 """
 # Default web-service host.
-DEFAULT_WS_HOST = r"https://cdf2cim.ws.es-doc.org"
+DEFAULT_WS_HOST = r"https://cdf2cim-api.es-doc.org"
 
 # Environment variable: web-service host (optional)
 ENV_VAR_WS_HOST = "CDF2CIM_CLIENT_WS_HOST"
