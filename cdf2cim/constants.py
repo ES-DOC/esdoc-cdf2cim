@@ -15,7 +15,7 @@ import os
 
 
 # Default web-service host.
-DEFAULT_WS_HOST = r"https://cdf2cim-api.es-doc.org"
+DEFAULT_WS_HOST = r"https://test-cdf2cim-api.es-doc.org"
 
 # I/O directory.
 IO_DIR = os.getenv("{}/.esdoc/cdf2cim".format(os.getenv("HOME")))
