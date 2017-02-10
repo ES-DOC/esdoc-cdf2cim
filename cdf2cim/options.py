@@ -16,9 +16,6 @@ from cdf2cim import constants
 
 
 
-# I/O directory.
-IO_DIR = os.getenv(constants.ENV_VAR_IO_DIR, "{}/.esdoc/cdf2cim".format(os.getenv("HOME")))
-
 # Web-service GitHub user.
 WS_USER = os.getenv(constants.ENV_VAR_GH_USER)
 

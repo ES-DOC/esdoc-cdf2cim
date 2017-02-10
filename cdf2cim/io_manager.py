@@ -21,7 +21,7 @@ import numpy
 
 from cdf2cim import exceptions
 from cdf2cim import logger
-from cdf2cim.options import IO_DIR
+from cdf2cim.constants import IO_DIR
 
 
 

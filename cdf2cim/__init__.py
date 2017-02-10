@@ -28,6 +28,7 @@ __version__ = "0.1.5.0"
 
 import glob
 
+from cdf2cim.constants import IO_DIR
 from cdf2cim.io_manager import dump as _dump
 from cdf2cim.mapper import execute as _map
 from cdf2cim.reducer import execute as _reduce

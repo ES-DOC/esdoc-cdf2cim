@@ -13,6 +13,9 @@
 # Default web-service host.
 DEFAULT_WS_HOST = r"https://cdf2cim-api.es-doc.org"
 
+# I/O directory.
+IO_DIR = os.getenv("{}/.esdoc/cdf2cim".format(os.getenv("HOME")))
+
 # Environment variable: web-service host (optional)
 ENV_VAR_WS_HOST = "CDF2CIM_CLIENT_WS_HOST"
 
@@ -21,9 +24,6 @@ ENV_VAR_GH_USER = "CDF2CIM_CLIENT_GITHUB_USER"
 
 # Environment variable: GitHub access token.
 ENV_VAR_GH_ACCESS_TOKEN = "CDF2CIM_CLIENT_GITHUB_ACCESS_TOKEN"
-
-# Environment variable: web-service host (optional)
-ENV_VAR_IO_DIR = "CDF2CIM_CLIENT_IO_DIR"
 
 # MIP era: CMIP5.
 MIP_ERA_CMIP5 = 'CMIP5'
