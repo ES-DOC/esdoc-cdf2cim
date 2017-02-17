@@ -22,6 +22,7 @@ import numpy
 from cdf2cim import exceptions
 from cdf2cim import logger
 from cdf2cim.constants import IO_DIR
+print 'IO_DIR=',IO_DIR
 
 
 
@@ -126,7 +127,7 @@ def dump(obj, name='md5', overwrite=False):
     """
     # Ensure IO directory exists.
     if not os.path.isdir(IO_DIR):
-        os.mkdir(IO_DIR)
+        os.makedirs(IO_DIR)
 
     # Convert metadata to JSON.
     metadata = json.dumps(encode(obj), indent=4)
