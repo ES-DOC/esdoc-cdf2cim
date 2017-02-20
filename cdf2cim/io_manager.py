@@ -14,15 +14,14 @@ import collections
 import json
 import os
 import uuid
-import hashlib
 
 import cf
 import numpy
 
 from cdf2cim import exceptions
+from cdf2cim import hashifier
 from cdf2cim import logger
 from cdf2cim.constants import IO_DIR
-print 'IO_DIR=',IO_DIR
 
 
 
@@ -127,14 +126,17 @@ def dump(obj, name='md5', overwrite=False):
     """
     # Ensure IO directory exists.
     if not os.path.isdir(IO_DIR):
-        os.makedirs(IO_DIR)
+        os.mkdir(IO_DIR)
 
-    # Convert metadata to JSON.
-    metadata = json.dumps(encode(obj), indent=4)
+    # Encode metadata as a JSON serializable ordered dictionary.
+    metadata = encode(obj)
+
+    # Encode metadata as a JSON string.
+    metadata_json = json.dumps(metadata, indent=4)
 
     # Set output file name.
     if name == 'md5':
-        fname = hashlib.md5(metadata).hexdigest()
+        fname = hashifier.hashify(metadata, metadata_json)
     else:
         fname = uuid.uuid4()
 
@@ -142,6 +144,6 @@ def dump(obj, name='md5', overwrite=False):
     fpath = os.path.join(IO_DIR, u"{}.json".format(unicode(fname)))
     if not os.path.isfile(fpath) or overwrite:
         with open(fpath, 'w') as fstream:
-            fstream.write(metadata)
+            fstream.write(metadata_json)
 
     return fpath
