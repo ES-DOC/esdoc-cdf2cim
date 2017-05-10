@@ -140,7 +140,7 @@ def dump(obj, name='md5', overwrite=False):
     else:
         fname = uuid.uuid4()
 
-    # Write.
+    # Write, unless file exists or overwrite is True
     fpath = os.path.join(IO_DIR, u"{}.json".format(unicode(fname)))
     if not os.path.isfile(fpath) or overwrite:
         with open(fpath, 'w') as fstream:

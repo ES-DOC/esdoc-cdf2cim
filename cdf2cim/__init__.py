@@ -53,7 +53,7 @@ def find(inputs):
         yield _map(identifier, properties, simulation_dates[identifier])
 
 
-def scan(inputs, name='md5', overwrite=True):
+def scan(inputs, name='md5', overwrite=False):
     """Scan NetCDF files and cdf2cim specific metadata to file-system.
 
     :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
