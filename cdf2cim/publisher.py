@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Publishes cdf2cim data to web-service.
 
-.. moduleauthor:: David Hassel <david.hassell@ncas.ac.uk>
+.. moduleauthor:: David Hassell <david.hassell@ncas.ac.uk>
 
 
 """
