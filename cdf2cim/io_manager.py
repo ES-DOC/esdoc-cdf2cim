@@ -126,7 +126,7 @@ def dump(obj, name='md5', overwrite=False):
     """
     # Ensure IO directory exists.
     if not os.path.isdir(IO_DIR):
-        os.mkdir(IO_DIR)
+        os.makedirs(IO_DIR)
 
     # Encode metadata as a JSON serializable ordered dictionary.
     metadata = encode(obj)
