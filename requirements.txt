@@ -1,5 +1,4 @@
 cf-python
-matplotlib
 nose
 numpy
 netCDF4
