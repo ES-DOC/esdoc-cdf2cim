@@ -23,7 +23,6 @@ from setuptools.dist import Distribution
 # List of 3rd party python dependencies.
 _REQUIRES = [
     'cf-python>=1.3.2',
-    'matplotlib>=1.4.2',
     'nose',
     'numpy>=1.7',
     'netCDF4>=1.2.1',
