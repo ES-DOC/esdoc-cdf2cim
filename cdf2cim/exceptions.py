@@ -10,6 +10,16 @@
 
 
 """
+class ClientError(Exception):
+    """Raised if a client error occurs when calling the web-service.
+
+    """
+    def __init__(self, err):
+        """Instance constructor.
+
+        """
+        super(ClientError, self).__init__("UNKNOWN FAILURE :: {}".format(err))
+
 
 class InvalidFileSearchCriteria(Exception):
     """Raised if NetCDF4 file search criteria are deemed invalid.

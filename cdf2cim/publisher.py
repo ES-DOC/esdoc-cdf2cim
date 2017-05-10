@@ -14,6 +14,7 @@ import json
 
 import requests
 
+from cdf2cim.exceptions import ClientError
 from cdf2cim.exceptions import WebServiceConnectionError
 from cdf2cim.exceptions import WebServiceProcessingError
 from cdf2cim.options import WS_ACCESS_TOKEN
@@ -48,7 +49,7 @@ def execute(fpath):
     except requests.exceptions.ConnectionError:
         return WebServiceConnectionError()
     except Exception as err:
-        return err
+        return ClientError(err)
     else:
         if r.status_code != 200:
             return WebServiceProcessingError(r.status_code, r.text)
