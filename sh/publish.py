@@ -18,11 +18,9 @@ def _main():
     """
     successes, failures = cdf2cim.publish()
     for fpath, err in failures:
-        fname = fpath.split("/")[-1]
-        cdf2cim.logger.log_warning("Publication error: {} :: {}".format(fname, err))
+        cdf2cim.logger.log_warning("Publication error: {} :: {}".format(fpath, err))
     for fpath in successes:
-        fname = fpath.split("/")[-1]
-        cdf2cim.logger.log("Publication success: {}".format(fname))
+        cdf2cim.logger.log("Published file: {}".format(fpath))
 
 
 # Main entry point.

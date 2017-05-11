@@ -26,6 +26,4 @@ def hashify(metadata, metadata_json):
 	hash2 = "{}{}{}".format(hash1, metadata['start_time'], metadata['end_time'])
 	hash2 = hashlib.md5(hash2).hexdigest()
 
-	print hash1, hash2
-
 	return hash1

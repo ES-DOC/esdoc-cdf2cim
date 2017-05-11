@@ -47,12 +47,12 @@ def execute(fpath):
             auth=credentials
             )
     except requests.exceptions.ConnectionError:
-        return WebServiceConnectionError()
+        raise WebServiceConnectionError()
     except Exception as err:
-        return ClientError(err)
+        raise ClientError(err)
     else:
         if r.status_code != 200:
-            return WebServiceProcessingError(r.status_code, r.text)
+            raise WebServiceProcessingError(r.status_code, r.text)
 
 
 def _get_payload(fpath):

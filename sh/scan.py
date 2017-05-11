@@ -28,7 +28,8 @@ def _main(args):
     """Write cdf2cim files to file system.
 
     """
-    cdf2cim.scan(args.input_dir)
+    for fpath in cdf2cim.scan(args.input_dir):
+        cdf2cim.logger.log("Scanned file: {}".format(fpath))
 
 
 # Main entry point.

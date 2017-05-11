@@ -116,7 +116,7 @@ def yield_cf_files(targets):
             cf.close_one_file()
 
 
-def dump(obj, overwrite=False):
+def dump(obj, overwrite):
     """Writes simulation metadata to file system.
 
     :param dict obj: Simulation metadata.
@@ -139,19 +139,22 @@ def dump(obj, overwrite=False):
     dpath = os.path.join(dpath, metadata['source_id'].lower())
     dpath = os.path.join(dpath, metadata['experiment_id'].lower())
 
-    # Ensure output directory exists.
-    if not os.path.isdir(dpath):
-        os.makedirs(dpath)
-
-    # Set output file name.
+    # Set output file path.
     fname = hashifier.hashify(metadata, metadata_json)
     fname = "{}.json".format(fname)
-
-    # Write, unless file exists or overwrite is True
     fpath = os.path.join(dpath, fname)
-    if overwrite or not os.path.isfile(fpath):
-        with open(fpath, 'w') as fstream:
-            fstream.write(metadata_json)
+
+    # Escape if already scanned/published;
+    if not overwrite:
+        if os.path.isfile(fpath) or \
+           os.path.isfile(fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED)):
+            return
+
+    # Write to file system.
+    if not os.path.isdir(dpath):
+        os.makedirs(dpath)
+    with open(fpath, 'w') as fstream:
+        fstream.write(metadata_json)
 
     return fpath
 
@@ -169,8 +172,15 @@ def yield_scanned_files():
 def move_scanned_to_published(fpath):
     """Moves a successfully published file from scanned to published.
 
+    :param str fpath: Path to a scanned file.
+
+    :returns: Path to published file.
+    :rtype: str
+
     """
     dest = fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED)
     if not os.path.isdir(os.path.dirname(dest)):
         os.makedirs(os.path.dirname(dest))
     shutil.move(fpath, dest)
+
+    return dest

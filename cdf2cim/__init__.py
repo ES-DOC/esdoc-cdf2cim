@@ -61,11 +61,11 @@ def scan(inputs, overwrite=False):
     :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
     :param bool overwrite: If True then overwrite an existing file.
 
-    :returns: Tuple of written cdf2cim formatted files.
+    :returns: Tuple of scanned cdf2cim files written to file system.
     :rtype: tuple
 
     """
-    return tuple(_dump(i, overwrite) for i in find(inputs))
+    return tuple(i for i in [_dump(j, overwrite) for j in find(inputs)] if i is not None)
 
 
 def publish():
@@ -75,18 +75,14 @@ def publish():
     :rtype: tuple
 
     """
-    # Publish files.
     successes = []
     failures = []
     for i in yield_scanned_files():
-        exception = _publish(i)
-        if exception is None:
-            successes.append(i)
+        try:
+            _publish(i)
+        except Exception as err:
+            failures.append((i, err))
         else:
-            failures.append((i, exception))
-
-    # Move successes to published folder.
-    for i in successes:
-        move_scanned_to_published(i)
+            successes.append(move_scanned_to_published(i))
 
     return tuple(successes), tuple(failures)
