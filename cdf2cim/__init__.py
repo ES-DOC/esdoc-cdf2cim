@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2016 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.1.6.1"
+__version__ = "0.1.6.2"
 
 import glob
 
@@ -74,6 +74,19 @@ def publish():
     :rtype: list
 
     """
+    # Get set of files to be published.
     files = glob.iglob("{}/*.json".format(IO_DIR))
+
+    # Publish files.
+    successes = []
+    failures = []
+    for i in files:
+        exception = _publish(i)
+        if exception is None:
+            successes.append(i)
+        else:
+            failures.append((i, exception))
+
+    return tuple(successes), tuple(failures)
 
     return tuple(i for i in [(j, _publish(j)) for j in files] if i[1] is not None)
