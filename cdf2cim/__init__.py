@@ -70,8 +70,8 @@ def scan(inputs, name='md5', overwrite=False):
 def publish():
     """Publishes to remote ES-DOC cdf2cim web-service.
 
-    :returns: List of publishing errors.
-    :rtype: list
+    :returns: 2 member tuple: successes, failures
+    :rtype: tuple
 
     """
     # Get set of files to be published.
