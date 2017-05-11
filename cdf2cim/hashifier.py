@@ -10,18 +10,18 @@
 
 
 """
+import json
 import hashlib
 
 
 
-def hashify(metadata, metadata_json):
+def hashify(metadata):
 	"""Returns hashes dervied from a cdf2cim metadata blob.
 
     :param dict metadata: Simulation metadata.
-    :param str metadata_json: Simulation metadata encoded as JSON.
 
 	"""
-	hash1 = hashlib.md5(metadata_json).hexdigest()
+	hash1 = hashlib.md5(json.dumps(metadata)).hexdigest()
 
 	hash2 = "{}{}{}".format(hash1, metadata['start_time'], metadata['end_time'])
 	hash2 = hashlib.md5(hash2).hexdigest()

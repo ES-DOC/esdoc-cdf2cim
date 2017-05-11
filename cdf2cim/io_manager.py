@@ -126,11 +126,11 @@ def dump(obj, overwrite):
     :rtype: str
 
     """
-    # Encode metadata as a JSON serializable ordered dictionary.
+    # Set metadata (a JSON serializable ordered dictionary).
     metadata = encode(obj)
 
-    # Encode metadata as a JSON string.
-    metadata_json = json.dumps(metadata, indent=4)
+    # Set hash id.
+    metadata['_hash_id'] = hashifier.hashify(metadata)
 
     # Set output directory.
     dpath = IO_DIR_SCANNED
@@ -140,8 +140,7 @@ def dump(obj, overwrite):
     dpath = os.path.join(dpath, metadata['experiment_id'].lower())
 
     # Set output file path.
-    fname = hashifier.hashify(metadata, metadata_json)
-    fname = "{}.json".format(fname)
+    fname = "{}.json".format(metadata['_hash_id'])
     fpath = os.path.join(dpath, fname)
 
     # Escape if already scanned/published;
@@ -154,7 +153,7 @@ def dump(obj, overwrite):
     if not os.path.isdir(dpath):
         os.makedirs(dpath)
     with open(fpath, 'w') as fstream:
-        fstream.write(metadata_json)
+        fstream.write(json.dumps(metadata, indent=4))
 
     return fpath
 
