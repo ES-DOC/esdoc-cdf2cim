@@ -16,9 +16,13 @@ def _main():
     """Publishes cdf2cim files to web-service.
 
     """
-    for fpath, err in cdf2cim.publish():
-    	fname = fpath.split("/")[-1]
-        cdf2cim.logger.log_warning("Publication error: {} :: {}".format(fname, err))
+    errors = cdf2cim.publish()
+    if errors:
+        for fpath, err in errors:
+            fname = fpath.split("/")[-1]
+            cdf2cim.logger.log_warning("Publication error: {} :: {}".format(fname, err))
+    else:
+        cdf2cim.logger.log("Publication succeeded")
 
 
 # Main entry point.
