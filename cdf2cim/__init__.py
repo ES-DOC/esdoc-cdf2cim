@@ -88,5 +88,3 @@ def publish():
             failures.append((i, exception))
 
     return tuple(successes), tuple(failures)
-
-    return tuple(i for i in [(j, _publish(j)) for j in files] if i[1] is not None)
