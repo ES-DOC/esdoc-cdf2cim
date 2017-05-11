@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2016 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.1.6.2"
+__version__ = "0.1.6.3"
 
 import glob
 
@@ -53,18 +53,17 @@ def find(inputs):
         yield _map(identifier, properties, simulation_dates[identifier])
 
 
-def scan(inputs, name='md5', overwrite=False):
+def scan(inputs, overwrite=False):
     """Scan NetCDF files and cdf2cim specific metadata to file-system.
 
     :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
-    :param str name: Style of output file name: 'md5' for md5 (not unique), 'uuid' for UUID (different every time)
     :param bool overwrite: If True then overwrite an existing file.
 
     :returns: Tuple of written cdf2cim formatted files.
     :rtype: tuple
 
     """
-    return tuple(_dump(i, name, overwrite) for i in find(inputs))
+    return tuple(_dump(i, overwrite) for i in find(inputs))
 
 
 def publish():

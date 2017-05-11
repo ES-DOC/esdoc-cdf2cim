@@ -113,11 +113,10 @@ def yield_cf_files(targets):
             cf.close_one_file()
 
 
-def dump(obj, name='md5', overwrite=False):
+def dump(obj, overwrite=False):
     """Writes simulation metadata to file system.
 
     :param dict obj: Simulation metadata.
-    :param str name: Style of output file name: 'md5' for md5 (not unique), 'uuid' for UUID.
     :param bool overwrite: If True then overwrite an existing file.
 
     :returns: Path to written file.
@@ -135,10 +134,7 @@ def dump(obj, name='md5', overwrite=False):
     metadata_json = json.dumps(metadata, indent=4)
 
     # Set output file name.
-    if name == 'md5':
-        fname = hashifier.hashify(metadata, metadata_json)
-    else:
-        fname = uuid.uuid4()
+    fname = hashifier.hashify(metadata, metadata_json)
 
     # Write, unless file exists or overwrite is True
     fpath = os.path.join(IO_DIR, u"{}.json".format(unicode(fname)))
