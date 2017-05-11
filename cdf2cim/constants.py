@@ -94,8 +94,8 @@ CMIP6_TO_CIM2 = {
     'realization_index'       : 'realization_index',     # E.g. 5
     'realm'                   : None,                    # E.g. 'atmos', 'ocean', 'atmosChem atmos'
     'references'              : 'references',
-    'source'                  : 'source_id',             # E.g. 'GFDL CM2.1: cycle 2.1.14'
-    'source_id'               : None,                    # E.g. 'GFDL-CM2-1'
+    'source'                  : None,                    # E.g. 'GFDL CM2.1: cycle 2.1.14'
+    'source_id'               : 'source_id',             # E.g. 'GFDL-CM2-1'
     'source_type'             : None,                    # E.g. 'AGCM', 'OGCM', 'AOGCM', 'ISM', 'AOGCM ISM'
     'sub_experiment'          : None,
     'sub_experiment_id'       : 'sub_experiment_id',     # E.g. 's1960', 's1965', 'none'
