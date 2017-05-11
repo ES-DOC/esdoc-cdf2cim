@@ -26,10 +26,12 @@ __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
 __version__ = "0.1.6.3"
 
-import glob
+
 
 from cdf2cim.constants import IO_DIR
 from cdf2cim.io_manager import dump as _dump
+from cdf2cim.io_manager import move_scanned_to_published
+from cdf2cim.io_manager import yield_scanned_files
 from cdf2cim.mapper import execute as _map
 from cdf2cim.reducer import execute as _reduce
 from cdf2cim.publisher import execute as _publish
@@ -73,17 +75,18 @@ def publish():
     :rtype: tuple
 
     """
-    # Get set of files to be published.
-    files = glob.iglob("{}/*.json".format(IO_DIR))
-
     # Publish files.
     successes = []
     failures = []
-    for i in files:
+    for i in yield_scanned_files():
         exception = _publish(i)
         if exception is None:
             successes.append(i)
         else:
             failures.append((i, exception))
+
+    # Move successes to published folder.
+    for i in successes:
+        move_scanned_to_published(i)
 
     return tuple(successes), tuple(failures)

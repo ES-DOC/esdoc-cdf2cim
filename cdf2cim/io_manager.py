@@ -11,8 +11,10 @@
 
 """
 import collections
+import glob
 import json
 import os
+import shutil
 import uuid
 
 import cf
@@ -21,7 +23,8 @@ import numpy
 from cdf2cim import exceptions
 from cdf2cim import hashifier
 from cdf2cim import logger
-from cdf2cim.constants import IO_DIR
+from cdf2cim.constants import IO_DIR_SCANNED
+from cdf2cim.constants import IO_DIR_PUBLISHED
 
 
 
@@ -123,23 +126,51 @@ def dump(obj, overwrite=False):
     :rtype: str
 
     """
-    # Ensure IO directory exists.
-    if not os.path.isdir(IO_DIR):
-        os.makedirs(IO_DIR)
-
     # Encode metadata as a JSON serializable ordered dictionary.
     metadata = encode(obj)
 
     # Encode metadata as a JSON string.
     metadata_json = json.dumps(metadata, indent=4)
 
+    # Set output directory.
+    dpath = IO_DIR_SCANNED
+    dpath = os.path.join(dpath, metadata['mip_era'].lower())
+    dpath = os.path.join(dpath, metadata['institution_id'].lower())
+    dpath = os.path.join(dpath, metadata['source_id'].lower())
+    dpath = os.path.join(dpath, metadata['experiment_id'].lower())
+
+    # Ensure output directory exists.
+    if not os.path.isdir(dpath):
+        os.makedirs(dpath)
+
     # Set output file name.
     fname = hashifier.hashify(metadata, metadata_json)
+    fname = "{}.json".format(fname)
 
     # Write, unless file exists or overwrite is True
-    fpath = os.path.join(IO_DIR, u"{}.json".format(unicode(fname)))
-    if not os.path.isfile(fpath) or overwrite:
+    fpath = os.path.join(dpath, fname)
+    if overwrite or not os.path.isfile(fpath):
         with open(fpath, 'w') as fstream:
             fstream.write(metadata_json)
 
     return fpath
+
+
+def yield_scanned_files():
+    """Yields set of scanned files for further processing.
+
+    """
+    result = []
+    for dpath, _, fnames in os.walk(IO_DIR_SCANNED):
+        for fname in fnames:
+            yield os.path.join(dpath, fname)
+
+
+def move_scanned_to_published(fpath):
+    """Moves a successfully published file from scanned to published.
+
+    """
+    dest = fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED)
+    if not os.path.isdir(os.path.dirname(dest)):
+        os.makedirs(os.path.dirname(dest))
+    shutil.move(fpath, dest)
