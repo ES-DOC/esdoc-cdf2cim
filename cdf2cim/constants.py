@@ -130,7 +130,7 @@ CMIP5_TO_CIM2 = {
     'parent_experiment_rip'   : None,
     'physics_version'         : 'physics_index',
     'references'              : 'references',
-    'source_id'               : 'source',
+    'source'                  : 'source',
     'realization'             : 'realization_index',
 }
 

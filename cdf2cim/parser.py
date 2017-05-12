@@ -120,13 +120,20 @@ def _parse_cmip5_properties(cim2_properties, global_attributes, time_coords):
 
 
     """
+
+    # Get rid of of attributes whose value is "N/A". Could be forcing,
+    # parent_experiment_id. (parent_experiment_rip is dealt with
+    # separately.)
+    for key, value in cim2_properties.items():
+        if value == "N/A":
+            del cim2_properties[key]
+
     cim2_properties.update(
         zip(['parent_realization_index',
              'parent_initialization_index',
              'parent_physics_index',
              'parent_forcing_index'],
-            map(int, re.findall('\d+', global_attributes.get('parent_experiment_rip', 'none')))))
-
+            map(int, re.findall('\d+', global_attributes.get('parent_experiment_rip', 'N/A')))))
 
 def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     """Extends cim2 proeprty set with CMIP6 specific properties.
