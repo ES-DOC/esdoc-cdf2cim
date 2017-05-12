@@ -68,7 +68,8 @@ def parse(cf_field):
         simple_mapping = constants.CMIP5_TO_CIM2
 
     for file_prop, cim2_prop in simple_mapping.iteritems():
-        cim2_properties[cim2_prop] = global_attributes.get(file_prop)
+        if file_prop in global_attributes:
+            cim2_properties[cim2_prop] = global_attributes[file_prop]
 
     # Add the time coordinates' calendar to the cim2 properties
     cim2_properties['calendar'] = _get_calendar(time_coords)
