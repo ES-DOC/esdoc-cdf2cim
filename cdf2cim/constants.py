@@ -17,10 +17,8 @@ import os
 # Default web-service host.
 DEFAULT_WS_HOST = r"https://test-cdf2cim-api.es-doc.org"
 
-# I/O directories.
-IO_DIR = "{}/.esdoc/cdf2cim".format(os.getenv("HOME"))
-IO_DIR_SCANNED = "{}/scanned".format(IO_DIR)
-IO_DIR_PUBLISHED = "{}/published".format(IO_DIR)
+# Environment variable: I/O directory
+ENV_VAR_IO_DIR = "CDF2CIM_CLIENT_IO_DIR"
 
 # Environment variable: web-service host (optional)
 ENV_VAR_WS_HOST = "CDF2CIM_CLIENT_WS_HOST"
@@ -30,6 +28,12 @@ ENV_VAR_GH_USER = "CDF2CIM_CLIENT_GITHUB_USER"
 
 # Environment variable: GitHub access token.
 ENV_VAR_GH_ACCESS_TOKEN = "CDF2CIM_CLIENT_GITHUB_ACCESS_TOKEN"
+
+# I/O directories.
+IO_DIR = "{}/cdf2cim".format(os.getenv(ENV_VAR_IO_DIR) or \
+                             "{}/.esdoc".format(os.getenv("HOME")))
+IO_DIR_SCANNED = "{}/scanned".format(IO_DIR)
+IO_DIR_PUBLISHED = "{}/published".format(IO_DIR)
 
 # MIP era: CMIP5.
 MIP_ERA_CMIP5 = 'CMIP5'
