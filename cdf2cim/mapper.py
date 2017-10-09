@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Maps parsed CF file info to a dictionary that will subsequently be transformed to CIM documents.
 
-.. moduleauthor:: David Hassel <david.hassell@ncas.ac.uk>
+.. moduleauthor:: David Hassell <david.hassell@ncas.ac.uk>
 
 
 """
