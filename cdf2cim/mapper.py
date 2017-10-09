@@ -20,6 +20,14 @@ def execute(identifier, properties, dates):
     """
     cim2_properties = properties[0].copy()
 
+    # Find the unique dataset versions
+    dataset_versions = []
+    for p in properties:
+        if 'dataset_versions' in p:
+            dataset_versions.extend(p['dataset_versions'])
+
+    cim2_properties['dataset_versions'] = tuple(sorted(set(dataset_versions)))
+
     # Find the start and end dates of the whole simulation
     start_date, end_date = _get_simulation_start_end_dates(dates, cim2_properties['calendar'])
     if start_date:

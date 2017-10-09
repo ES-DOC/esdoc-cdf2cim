@@ -61,6 +61,11 @@ def parse(cf_field):
     # Simply map field properties to CIM2 properties
     cim2_properties = {}
 
+    # Add the dataset version to the cim2 properties. It is assumed
+    # that the file path of the file is
+    # /a/load/of/DRS/stuff/<VERSION>/filename.nc
+    cim2_properties['dataset_versions'] = (cf_field.fpath.split('/')[-2],)
+
     # Parse properties which only require a simple mapping
     if mip_era == constants.CMIP6:
         simple_mapping = constants.CMIP6_TO_CIM2
