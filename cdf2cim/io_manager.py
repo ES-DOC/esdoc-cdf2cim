@@ -149,7 +149,7 @@ def dump(obj, overwrite):
     if not overwrite:
         if os.path.isfile(fpath) or \
            os.path.isfile(fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED)):
-            return
+            return fpath
 
     # Write to file system.
     if not os.path.isdir(dpath):

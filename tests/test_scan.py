@@ -44,8 +44,7 @@ def _assert_scan(dpath, expected_count):
 
     """
     assert os.path.isdir(dpath)
-    outputs = cdf2cim.scan(dpath)
+    outputs = cdf2cim.scan(dpath, True)
     assert len(outputs) == expected_count
     for fpath in outputs:
         assert os.path.isfile(fpath)
-

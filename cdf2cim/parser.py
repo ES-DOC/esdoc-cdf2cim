@@ -174,7 +174,7 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     if branch_time_in_parent is not None:
         if not isinstance(branch_time_in_parent, float):
             # Fix in case branch_time_in_parent is a string
-            print "WARNING: branch_time_in_parent is a {}, converting to float".format(branch_time_in_parent.__class__.__name__)
+            # print "WARNING: branch_time_in_parent is a {}, converting to float".format(branch_time_in_parent.__class__.__name__)
             branch_time_in_parent = float(branch_time_in_parent)
 
         x = cf.Data([branch_time_in_parent], units=parent_time_units).dtarray[0]
@@ -187,7 +187,7 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     if branch_time_in_child is not None:
         if not isinstance(branch_time_in_child, float):
             # Fix in case branch_time_in_child is a string
-            print "WARNING: branch_time_in_child is a {}, converting to float".format(branch_time_in_child.__class__.__name__)
+            # print "WARNING: branch_time_in_child is a {}, converting to float".format(branch_time_in_child.__class__.__name__)
             branch_time_in_child = float(branch_time_in_child)            
 
         x = cf.Data([branch_time_in_child], units=time_coords.Units).dtarray[0]
