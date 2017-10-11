@@ -18,7 +18,7 @@ import os
 # Test NetCDF file directories.
 NETCDF_DIR = os.path.join(os.path.dirname(__file__), "test-data")
 CMIP5_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip5')
-CMIP6_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip6')
+CMIP6_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip6/v1')
 
 # CMIP5 directory / files.
 CMIP5_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip5')
@@ -27,7 +27,7 @@ CMIP5_NETCDF_FILES = [os.path.join(CMIP5_NETCDF_DIR, i) for i in os.listdir(CMIP
 CMIP5_NETCDF_FILE_COUNT = len(CMIP5_NETCDF_FILES)
 
 # CMIP6 directory / files.
-CMIP6_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip6')
+CMIP6_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip6/v1')
 CMIP6_NETCDF_FILE = os.path.join(CMIP6_NETCDF_DIR, 'tas_0.nc')
 CMIP6_NETCDF_FILES = [os.path.join(CMIP6_NETCDF_DIR, i) for i in os.listdir(CMIP6_NETCDF_DIR)]
 CMIP6_NETCDF_FILE_COUNT = len(CMIP6_NETCDF_FILES)
