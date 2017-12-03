@@ -5,7 +5,7 @@
     "calendar": "360_day", 
     "contact": "Python Coder (python@a.b.com) ", 
     "dataset_versions": [
-        "cmip6"
+        "v1"
     ], 
     "end_time": "2006-06-01 00:00:00", 
     "experiment_id": "piControl", 
@@ -25,5 +25,5 @@
     "start_time": "2005-12-01 00:00:00", 
     "sub_experiment_id": "none", 
     "variant_info": "forcing: black carbon aerosol only", 
-    "_hash_id": "f129b604344e9a71c88e4de41d9369f1"
+    "_hash_id": "4306ffb5d9abf74f02ab65709c51184b"
 }
