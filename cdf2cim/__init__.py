@@ -20,7 +20,7 @@
 
 """
 __author__ = "David Hassell, Mark A. Greenslade"
-__copyright__ = "Copyright 2016 ES-DOC"
+__copyright__ = "Copyright 2018 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
