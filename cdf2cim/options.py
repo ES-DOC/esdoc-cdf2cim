@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Library overrideable options.
 
-.. moduleauthor:: David Hassel <david.hassell@ncas.ac.uk>
+.. moduleauthor:: David Hassell <david.hassell@ncas.ac.uk>
 
 
 """

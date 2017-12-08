@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Encpasulates hashing of cdf2cim entities.
 
-.. moduleauthor:: David Hassel <david.hassell@ncas.ac.uk>
+.. moduleauthor:: David Hassell <david.hassell@ncas.ac.uk>
 
 
 """

@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Reduces CF files to information used to create CIM documents.
 
-.. moduleauthor:: David Hassel <david.hassell@ncas.ac.uk>
+.. moduleauthor:: David Hassell <david.hassell@ncas.ac.uk>
 
 
 """

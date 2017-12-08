@@ -6,7 +6,7 @@
    :platform: Unix, Windows
    :synopsis: Enapsulates package IO operations.
 
-.. moduleauthor:: David Hassel <david.hassell@ncas.ac.uk>
+.. moduleauthor:: David Hassell <david.hassell@ncas.ac.uk>
 
 
 """
