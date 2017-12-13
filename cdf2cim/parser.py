@@ -53,7 +53,7 @@ def parse(cf_field):
         return None, None, None
 
     # Get the netCDF global attributes
-    global_attributes = cf_field.properties
+    global_attributes = cf_field.properties()
 
     # Find out which mip-era file we have
     mip_era = _get_mip_era(global_attributes)
@@ -64,7 +64,7 @@ def parse(cf_field):
     # Add the dataset version to the cim2 properties. It is assumed
     # that the file path of the file is
     # /a/load/of/DRS/stuff/<VERSION>/filename.nc
-    cim2_properties['dataset_versions'] = (cf_field.fpath.split('/')[-2],)
+    cim2_properties['dataset_versions'] = (cf_field.files().pop().split('/')[-2],)
 
     # Parse properties which only require a simple mapping
     if mip_era == constants.CMIP6:
@@ -172,9 +172,9 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     # ----------------------------------------------------------------
     branch_time_in_parent = global_attributes.get('branch_time_in_parent')
     if branch_time_in_parent is not None:
-        if not isinstance(branch_time_in_parent, float):
+        if isinstance(branch_time_in_parent, basestring):
             # Fix in case branch_time_in_parent is a string
-            # print "WARNING: branch_time_in_parent is a {}, converting to float".format(branch_time_in_parent.__class__.__name__)
+            # print "WARNING: branch_time_in_parent is a string, converting to float"
             branch_time_in_parent = float(branch_time_in_parent)
 
         x = cf.Data([branch_time_in_parent], units=parent_time_units).dtarray[0]
