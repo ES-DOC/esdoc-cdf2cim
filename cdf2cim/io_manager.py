@@ -112,8 +112,11 @@ def yield_cf_files(targets):
             logger.log_warning("Non netCDF file rejected: {}".format(fpath))
         else:
             # Save the netCDF file name (from which we can extract the dataset version)
-            cf_file.fpath = fpath
-            yield cf_file
+            for f in cf_file:
+                f.fpath = fpath
+#                yield f
+
+            yield cf_file # list
             # ... close file to prevent a proliferation of open file handles
             cf.close_one_file()
 

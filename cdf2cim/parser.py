@@ -28,8 +28,9 @@ def yield_parsed(targets):
     :rtype: generator
 
     """
-    for cf_file in yield_cf_files(targets):
-        for cf_field in cf_file:
+    for cf_fields in yield_cf_files(targets):
+#        print 'PPP',  repr(cf_fields)
+        for cf_field in cf_fields:
             identifier, properties, dates = parse(cf_field)
             if identifier:
                 yield cf_field, identifier, properties, dates
@@ -64,7 +65,7 @@ def parse(cf_field):
     # Add the dataset version to the cim2 properties. It is assumed
     # that the file path of the file is
     # /a/load/of/DRS/stuff/<VERSION>/filename.nc
-    cim2_properties['dataset_versions'] = (cf_field.files().pop().split('/')[-2],)
+    cim2_properties['dataset_versions'] = (cf_field.fpath.split('/')[-2],)
 
     # Parse properties which only require a simple mapping
     if mip_era == constants.CMIP6:

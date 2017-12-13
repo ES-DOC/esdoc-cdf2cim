@@ -92,10 +92,18 @@ def _assert_cf_files(criteria, expected_length):
     """
     total = 0
     for item in cdf2cim.io_manager.yield_cf_files(criteria):
-        _assert_cf_file(item)
+#        _assert_cf_file(item)
+        _assert_list_of_cf_fields(item)
         total += 1
     assert total == expected_length
 
+
+def _assert_list_of_cf_fields(cf_file):
+    """Asserts a single CF file.
+
+    """
+    for f in cf_file:
+        assert isinstance(f, cf.Field)
 
 def _assert_cf_file(cf_file):
     """Asserts a single CF file.
