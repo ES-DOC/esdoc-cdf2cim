@@ -17,8 +17,6 @@ import os
 
 # Test NetCDF file directories.
 NETCDF_DIR = os.path.join(os.path.dirname(__file__), "test-data")
-CMIP5_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip5')
-CMIP6_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip6/v1')
 
 # CMIP5 directory / files.
 CMIP5_NETCDF_DIR = os.path.join(NETCDF_DIR, 'cmip5')

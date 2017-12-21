@@ -2,6 +2,9 @@
 export CDF2CIM_CLIENT_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export CDF2CIM_CLIENT_HOME="$( cd "$( dirname "${CDF2CIM_CLIENT_HOME[0]}" )" && pwd )"
 
+# Set python path
+export PYTHONPATH=$CDF2CIM_CLIENT_HOME:$PYTHONPATH
+
 # Ensure shell scripts are executable
 chmod a+x $CDF2CIM_CLIENT_HOME/sh/*.sh
 

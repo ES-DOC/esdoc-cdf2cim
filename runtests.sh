@@ -1,11 +1,18 @@
 #!/bin/sh
 
-# Set paths.
-CDF2CIM_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $CDF2CIM_DIR
+# Import utils.
+source $CDF2CIM_CLIENT_HOME/sh/utils.sh
 
-# Extend python path.
-export PYTHONPATH=$PYTHONPATH:$CDF2CIM_DIR
+# Main entry point.
+main()
+{
+    log "ERRATA-TESTS : execution starts ..."
 
-# Run test suite.
-nosetests -v -s tests
+    nosetests -v -s $CDF2CIM_CLIENT_HOME/tests
+    # nosetests -v -s $CDF2CIM_CLIENT_HOME/tests/test_publish.py
+
+    log "ERRATA-TESTS : execution complete ..."
+}
+
+# Invoke entry point.
+main
