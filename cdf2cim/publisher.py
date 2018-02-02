@@ -11,6 +11,7 @@
 
 """
 import json
+import sys
 
 import requests
 
@@ -69,7 +70,6 @@ def verify_credentials():
         'login': WS_USER,
         'token': WS_ACCESS_TOKEN
     }
-
     # Post to web-service.
     try:
         r = requests.get(endpoint, params=params)
@@ -84,6 +84,18 @@ def verify_credentials():
             raise WebServiceAuthorizationError()
         elif r.status_code != 200:
             raise WebServiceProcessingError(r.status_code, r.text)
+
+
+def verify_credentials_cli():
+    """Command line interface for verify_credentials.
+    """
+    try:
+        verify_credentials()
+    except Exception as err:
+        print "Verify credentials failed: {}".format(err.message)
+        sys.exit(1)
+    print "Credentials verification succeeded"
+    sys.exit(0)
 
 
 def _get_payload(fpath):
