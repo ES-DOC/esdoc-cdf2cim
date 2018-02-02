@@ -14,7 +14,11 @@ import json
 
 import requests
 
+from cdf2cim.constants import HTTP_RESPONSE_AUTHENTICATION_ERROR
+from cdf2cim.constants import HTTP_RESPONSE_AUTHORIZATION_ERROR
 from cdf2cim.exceptions import ClientError
+from cdf2cim.exceptions import WebServiceAuthenticationError
+from cdf2cim.exceptions import WebServiceAuthorizationError
 from cdf2cim.exceptions import WebServiceConnectionError
 from cdf2cim.exceptions import WebServiceProcessingError
 from cdf2cim.options import WS_ACCESS_TOKEN
@@ -52,6 +56,33 @@ def execute(fpath):
         raise ClientError(err)
     else:
         if r.status_code != 200:
+            raise WebServiceProcessingError(r.status_code, r.text)
+
+
+def verify_credentials():
+    """Verifies that passed credentials are deemed valid by ES-DOC cdf2cim web-service.
+
+    """
+    # Prepare request info.
+    endpoint = "{}/verify-authorization".format(WS_HOST)
+    params = {
+        'login': WS_USER,
+        'token': WS_ACCESS_TOKEN
+    }
+
+    # Post to web-service.
+    try:
+        r = requests.get(endpoint, params=params)
+    except requests.exceptions.ConnectionError:
+        raise WebServiceConnectionError()
+    except Exception as err:
+        raise ClientError(err)
+    else:
+        if r.status_code == HTTP_RESPONSE_AUTHENTICATION_ERROR:
+            raise WebServiceAuthenticationError()
+        elif r.status_code == HTTP_RESPONSE_AUTHORIZATION_ERROR:
+            raise WebServiceAuthorizationError()
+        elif r.status_code != 200:
             raise WebServiceProcessingError(r.status_code, r.text)
 
 

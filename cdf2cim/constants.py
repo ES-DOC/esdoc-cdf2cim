@@ -29,6 +29,12 @@ ENV_VAR_GH_USER = "CDF2CIM_CLIENT_GITHUB_USER"
 # Environment variable: GitHub access token.
 ENV_VAR_GH_ACCESS_TOKEN = "CDF2CIM_CLIENT_GITHUB_ACCESS_TOKEN"
 
+# HTTP response code: authentication error.
+HTTP_RESPONSE_AUTHENTICATION_ERROR = 401
+
+# HTTP response code: authorization error.
+HTTP_RESPONSE_AUTHORIZATION_ERROR = 403
+
 # I/O directories.
 IO_DIR = "{}/cdf2cim".format(os.getenv(ENV_VAR_IO_DIR) or \
                              "{}/.esdoc".format(os.getenv("HOME")))

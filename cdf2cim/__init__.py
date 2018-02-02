@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2018 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.1.10.0"
+__version__ = "0.2.0.0"
 
 
 
@@ -35,6 +35,7 @@ from cdf2cim.io_manager import yield_scanned_files
 from cdf2cim.mapper import execute as _map
 from cdf2cim.reducer import execute as _reduce
 from cdf2cim.publisher import execute as _publish
+from cdf2cim.publisher import verify_credentials
 
 
 
@@ -86,3 +87,4 @@ def publish():
             successes.append(move_scanned_to_published(i))
 
     return tuple(successes), tuple(failures)
+

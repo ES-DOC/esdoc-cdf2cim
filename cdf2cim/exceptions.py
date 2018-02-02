@@ -45,6 +45,29 @@ class WebServiceConnectionError(Exception):
         super(WebServiceConnectionError, self).__init__("WEB-SERVICE CONNECTION FAILURE")
 
 
+
+class WebServiceAuthenticationError(Exception):
+    """Raised if web-service authentication fails.
+
+    """
+    def __init__(self):
+        """Instance constructor.
+
+        """
+        super(WebServiceAuthenticationError, self).__init__("WEB-SERVICE AUTHENTICATION FAILURE")
+
+
+class WebServiceAuthorizationError(Exception):
+    """Raised if web-service authorization fails.
+
+    """
+    def __init__(self):
+        """Instance constructor.
+
+        """
+        super(WebServiceAuthorizationError, self).__init__("WEB-SERVICE AUTHORIZATION FAILURE")
+
+
 class WebServiceProcessingError(Exception):
     """Raised if web-service processing fails.
 
