@@ -55,7 +55,11 @@ def execute(fpath):
     except Exception as err:
         raise ClientError(err)
     else:
-        if r.status_code != 200:
+        if r.status_code == HTTP_RESPONSE_AUTHENTICATION_ERROR:
+            raise WebServiceAuthenticationError()
+        elif r.status_code == HTTP_RESPONSE_AUTHORIZATION_ERROR:
+            raise WebServiceAuthorizationError()
+        elif r.status_code != 200:
             raise WebServiceProcessingError(r.status_code, r.text)
 
 

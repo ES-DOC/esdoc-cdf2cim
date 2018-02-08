@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2018 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.2.0.0"
+__version__ = "0.2.1.1"
 
 
 
@@ -32,10 +32,14 @@ from cdf2cim.constants import IO_DIR
 from cdf2cim.io_manager import dump as _dump
 from cdf2cim.io_manager import move_scanned_to_published
 from cdf2cim.io_manager import yield_scanned_files
+from cdf2cim.logger import log
+from cdf2cim.logger import log_warning
+from cdf2cim.logger import log_error
 from cdf2cim.mapper import execute as _map
 from cdf2cim.reducer import execute as _reduce
 from cdf2cim.publisher import execute as _publish
 from cdf2cim.publisher import verify_credentials
+
 
 
 

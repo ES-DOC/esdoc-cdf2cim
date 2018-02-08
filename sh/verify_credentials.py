@@ -10,11 +10,6 @@
 """
 from cdf2cim import logger
 from cdf2cim import verify_credentials
-from cdf2cim.exceptions import ClientError
-from cdf2cim.exceptions import WebServiceAuthenticationError
-from cdf2cim.exceptions import WebServiceAuthorizationError
-from cdf2cim.exceptions import WebServiceConnectionError
-from cdf2cim.exceptions import WebServiceProcessingError
 
 
 
@@ -24,14 +19,6 @@ def _main():
     """
     try:
         verify_credentials()
-    except (
-        ClientError,
-        WebServiceConnectionError,
-        WebServiceAuthenticationError,
-        WebServiceAuthorizationError,
-        WebServiceProcessingError
-        ) as err:
-        logger.log_error(err)
     except Exception as err:
         logger.log_error(err)
 

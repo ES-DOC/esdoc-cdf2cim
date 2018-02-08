@@ -97,5 +97,12 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Topic :: Software Development :: Libraries :: Python Modules',
-    ]
+    ],
+    entry_points={
+        'console_scripts': [
+            'cdf2cim-publish = cdf2cim.cli:publish',
+            'cdf2cim-scan = cdf2cim.cli:scan',
+            'cdf2cim-verify-credentials = cdf2cim.cli:verify_credentials'
+        ]
+    }
 )
