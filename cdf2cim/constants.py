@@ -41,6 +41,15 @@ IO_DIR = "{}/cdf2cim".format(os.getenv(ENV_VAR_IO_DIR) or \
 IO_DIR_SCANNED = "{}/scanned".format(IO_DIR)
 IO_DIR_PUBLISHED = "{}/published".format(IO_DIR)
 
+# File status: newly scanned.
+FILE_STATUS_SCANNED_NEW = 0
+
+# File status: scanned & queued.
+FILE_STATUS_SCANNED_QUEUED = 1
+
+# File status: published.
+FILE_STATUS_PUBLISHED = 2
+
 # MIP era: CMIP5.
 MIP_ERA_CMIP5 = 'CMIP5'
 

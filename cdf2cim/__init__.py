@@ -24,11 +24,14 @@ __copyright__ = "Copyright 2018 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.2.1.1"
+__version__ = "0.2.2.1"
 
 
 
 from cdf2cim.constants import IO_DIR
+from cdf2cim.constants import FILE_STATUS_SCANNED_NEW
+from cdf2cim.constants import FILE_STATUS_SCANNED_QUEUED
+from cdf2cim.constants import FILE_STATUS_PUBLISHED
 from cdf2cim.io_manager import dump as _dump
 from cdf2cim.io_manager import move_scanned_to_published
 from cdf2cim.io_manager import yield_scanned_files
@@ -66,11 +69,21 @@ def scan(inputs, overwrite=False):
     :param list inputs: File and/or directory pointers to NetCDF files, e.g. ['IPSL/IPSL-CM5B-LR'].
     :param bool overwrite: If True then overwrite an existing file.
 
-    :returns: Tuple of scanned cdf2cim files written to file system.
+    :returns: 3 member tuple of cdf2cim files: (new, queued, published)
     :rtype: tuple
 
     """
-    return tuple(i for i in [_dump(j, overwrite) for j in find(inputs)] if i is not None)
+    result = {
+        FILE_STATUS_SCANNED_NEW: [],
+        FILE_STATUS_SCANNED_QUEUED: [],
+        FILE_STATUS_PUBLISHED: []
+    }
+    for fstate, fpath in [_dump(j, overwrite) for j in find(inputs)]:
+        result[fstate].append(fpath)
+
+    return tuple(result[FILE_STATUS_SCANNED_NEW]), \
+           tuple(result[FILE_STATUS_SCANNED_QUEUED]), \
+           tuple(result[FILE_STATUS_PUBLISHED])
 
 
 def publish():

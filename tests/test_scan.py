@@ -19,7 +19,7 @@ from utils import *
 
 
 def test_is_function():
-    """ES-DOC :: cdf2cim :: write :: test cdf2cim supports scan function.
+    """ES-DOC :: cdf2cim :: write :: cdf2cim.scan function is supported.
 
     """
     assert inspect.isfunction(cdf2cim.scan)
@@ -44,7 +44,7 @@ def _assert_scan(dpath, expected_count):
 
     """
     assert os.path.isdir(dpath)
-    outputs = cdf2cim.scan(dpath, True)
-    assert len(outputs) == expected_count
-    for fpath in outputs:
+    new, queued, published = cdf2cim.scan(dpath, True)
+    assert len(new) == expected_count
+    for fpath in new + queued + published:
         assert os.path.isfile(fpath)

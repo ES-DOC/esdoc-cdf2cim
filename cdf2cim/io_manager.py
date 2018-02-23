@@ -23,6 +23,9 @@ import numpy
 from cdf2cim import exceptions
 from cdf2cim import hashifier
 from cdf2cim import logger
+from cdf2cim.constants import FILE_STATUS_PUBLISHED
+from cdf2cim.constants import FILE_STATUS_SCANNED_NEW
+from cdf2cim.constants import FILE_STATUS_SCANNED_QUEUED
 from cdf2cim.constants import IO_DIR_SCANNED
 from cdf2cim.constants import IO_DIR_PUBLISHED
 
@@ -107,16 +110,16 @@ def yield_cf_files(targets):
     """
     for fpath in yield_files(targets):
         try:
-            cf_file = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
+            cf_files = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
         except (IOError, OSError):
             logger.log_warning("Non netCDF file rejected: {}".format(fpath))
         else:
             # Save the netCDF file name (from which we can extract the dataset version)
-            for f in cf_file:
-                f.fpath = fpath
-#                yield f
+            for cf_file in cf_files:
+                cf_file.fpath = fpath
 
-            yield cf_file # list
+            yield cf_files
+
             # ... close file to prevent a proliferation of open file handles
             cf.close_one_file()
 
@@ -150,9 +153,12 @@ def dump(obj, overwrite):
 
     # Escape if already scanned/published;
     if not overwrite:
-        if os.path.isfile(fpath) or \
-           os.path.isfile(fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED)):
-            return fpath
+        if os.path.isfile(fpath):
+            return (FILE_STATUS_SCANNED_QUEUED, fpath)
+        else:
+            fpath_published = fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED)
+            if os.path.isfile(fpath_published):
+                return (FILE_STATUS_PUBLISHED, fpath_published)
 
     # Write to file system.
     if not os.path.isdir(dpath):
@@ -160,7 +166,7 @@ def dump(obj, overwrite):
     with open(fpath, 'w') as fstream:
         fstream.write(json.dumps(metadata, indent=4))
 
-    return fpath
+    return (FILE_STATUS_SCANNED_NEW, fpath)
 
 
 def yield_scanned_files():
