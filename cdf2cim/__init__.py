@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2018 ES-DOC"
 __date__ = "2016-07-25"
 __license__ = "GPL/CeCILL-2.1"
 __title__ = "cdf2cim"
-__version__ = "0.2.2.1"
+__version__ = "0.2.2.2"
 
 
 

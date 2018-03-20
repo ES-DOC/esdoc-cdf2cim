@@ -39,23 +39,23 @@ def scan():
 
     """
     # Parse command line args.
-	parser = argparse.ArgumentParser("ES-DOC netCDF scanner.")
-	parser.add_argument(
-	    "-i", "--in-dir",
-	    help="Path to a directory where CF files are to be found",
-	    dest="input_dir",
-	    type=str
-	    )
-	args = parser.parse_args()
+    parser = argparse.ArgumentParser("ES-DOC netCDF scanner.")
+    parser.add_argument(
+        "-i", "--in-dir",
+        help="Path to a directory where CF files are to be found",
+        dest="input_dir",
+        type=str
+        )
+    args = parser.parse_args()
 
-	# Invoke.
-	try:
-	    for fpath in cdf2cim.scan(args.input_dir):
-	        cdf2cim.log("Scanned file: {}".format(fpath))
-	except Exception as err:
+    # Invoke.
+    try:
+        for fpath in cdf2cim.scan(args.input_dir):
+            cdf2cim.log("Scanned file: {}".format(fpath))
+    except Exception as err:
         cdf2cim.log_error('Scan error: {}'.format(err))
         sys.exit(1)
-	else:
+    else:
         cdf2cim.log('Scan succeeded')
         sys.exit(0)
 
@@ -73,8 +73,8 @@ def publish():
         cdf2cim.log_error('Publication error: {}'.format(err))
         sys.exit(1)
     else:
-	    for fpath, err in failures:
-	        cdf2cim.log_warning("Publication error: {} :: {}".format(fpath, err))
-	    for fpath in successes:
-	        cdf2cim.log("Published file: {}".format(fpath))
+        for fpath, err in failures:
+            cdf2cim.log_warning("Publication error: {} :: {}".format(fpath, err))
+        for fpath in successes:
+            cdf2cim.log("Published file: {}".format(fpath))
         sys.exit(0)
