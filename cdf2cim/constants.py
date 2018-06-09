@@ -15,7 +15,7 @@ import os
 
 
 # Default web-service host.
-DEFAULT_WS_HOST = r"https://test-cdf2cim-api.es-doc.org"
+DEFAULT_WS_HOST = r"https://test-cdf2cim.es-doc.org"
 
 # Environment variable: I/O directory
 ENV_VAR_IO_DIR = "CDF2CIM_CLIENT_IO_DIR"
