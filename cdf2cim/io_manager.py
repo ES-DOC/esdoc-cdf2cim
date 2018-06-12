@@ -95,7 +95,7 @@ def yield_files(criteria):
             yield os.path.abspath(target)
         elif os.path.isdir(target):
             for folder, _, fnames in os.walk(target, followlinks=True):
-                for fname in fnames:
+                for fname in [i for i in fnames if not i.startswith('.')]:
                     yield os.path.abspath(os.path.join(folder, fname))
 
 

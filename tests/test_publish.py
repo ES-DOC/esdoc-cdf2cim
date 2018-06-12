@@ -47,7 +47,7 @@ def _test_publish(dpath):
     """
     scanned, _, _ = cdf2cim.scan(dpath, True)
     published, published_errors = cdf2cim.publish()
-    assert len(published_errors) == 0
+    assert len(published_errors) == 0, published_errors
     assert len(published) == len(scanned)
     for fpath in scanned:
         assert fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED) in published
