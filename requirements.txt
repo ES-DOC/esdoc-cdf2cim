@@ -1,5 +1,5 @@
 cf-python
-nose
+nose2
 numpy
 netCDF4
 psutil
