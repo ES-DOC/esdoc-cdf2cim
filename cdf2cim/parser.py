@@ -155,7 +155,7 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
 
     # parent_time_units
     parent_time_units = global_attributes.get('parent_time_units')
-    if parent_time_units is None:
+    if parent_time_units in (None, 'no parent'):
         # parent_time_units has not been set in file, so they are
         # assumed to be the same as the child time units
         parent_time_units = time_coords.Units
