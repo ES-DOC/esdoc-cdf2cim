@@ -20,14 +20,6 @@ def execute(identifier, properties, dates):
     """
     cim2_properties = properties[0].copy()
 
-    # Find the unique dataset versions
-    dataset_versions = []
-    for p in properties:
-        if 'dataset_versions' in p:
-            dataset_versions.extend(p['dataset_versions'])
-
-    cim2_properties['dataset_versions'] = tuple(sorted(set(dataset_versions)))
-
     # Find the start and end dates of the whole simulation
     start_date, end_date = _get_simulation_start_end_dates(dates, cim2_properties['calendar'])
     if start_date:
@@ -52,10 +44,11 @@ def execute(identifier, properties, dates):
         if len(v) == 1:
             cim2_properties[prop] = v.pop()
 
-    # Include all items from extra2 from all files, omitting duplicates.
+    # Include all items from extra2 from all files, omitting
+    # duplicates, as a string
     extra2 = {
-        'contact'    : [],
-        'references' : [],
+        'contact'   : [],
+        'references': [],
     }
 
     for p in properties:
@@ -67,6 +60,23 @@ def execute(identifier, properties, dates):
         v.discard(None)
         if v:
             cim2_properties[prop] = ', '.join(sorted(v))
+
+    # Include all items from extra3 from all files, omitting
+    # duplicates, as a list
+    extra3 = {
+        'dataset_versions': [],
+        'filenames'       : [],
+    }
+
+    for p in properties:
+        for x, v in extra3.iteritems():
+            v.append(p.get(x))
+
+    for prop, v in extra3.iteritems():
+        v = set(v)
+        v.discard(None)
+        if v:
+            cim2_properties[prop] = tuple(sorted(v))
 
     # ------------------------------------------------------------
     # The cim2_properties dictionary now contains everything

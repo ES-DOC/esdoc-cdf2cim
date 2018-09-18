@@ -29,7 +29,6 @@ def yield_parsed(targets):
 
     """
     for cf_fields in yield_cf_files(targets):
-#        print 'PPP',  repr(cf_fields)
         for cf_field in cf_fields:
             identifier, properties, dates = parse(cf_field)
             if identifier:
@@ -62,11 +61,6 @@ def parse(cf_field):
     # Simply map field properties to CIM2 properties
     cim2_properties = {}
 
-    # Add the dataset version to the cim2 properties. It is assumed
-    # that the file path of the file is
-    # /a/load/of/DRS/stuff/<VERSION>/filename.nc
-    cim2_properties['dataset_versions'] = (cf_field.fpath.split('/')[-2],)
-
     # Parse properties which only require a simple mapping
     if mip_era == constants.CMIP6:
         simple_mapping = constants.CMIP6_TO_CIM2
@@ -76,6 +70,13 @@ def parse(cf_field):
     for file_prop, cim2_prop in simple_mapping.iteritems():
         if file_prop in global_attributes:
             cim2_properties[cim2_prop] = global_attributes[file_prop]
+
+    # Add the dataset version to the cim2 properties. It is assumed
+    # that the file path of the file is
+    # /a/load/of/DRS/stuff/<VERSION>/filename.nc
+    cim2_properties['dataset_versions'] = cf_field.fpath.split('/')[-2]
+
+    cim2_properties['filenames'] = cf_field.fpath
 
     # Add the time coordinates' calendar to the cim2 properties
     cim2_properties['calendar'] = _get_calendar(time_coords)
@@ -213,5 +214,7 @@ def _get_simulation_id(cim2_properties):
                   if k not in ('contact',
                                'references',
                                'forcing',
-                               'variant_info')
+                               'variant_info',
+                               'dataset_versions',
+                               'filenames',)
               ])
