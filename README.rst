@@ -37,7 +37,7 @@ ESG-F data node managers.
 How to install esdoc-cdf2cim ?
 --------------------------------------
 
-pip install cdf2cim
+  pip install cdf2cim
 
 
 How to integrate esdoc-cdf2cim into the ESG Publisher?
