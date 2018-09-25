@@ -43,7 +43,7 @@ pip install cdf2cim
 How to integrate esdoc-cdf2cim into the ESG Publisher?
 ------------------------------------------------------
 
-[ESG Publisher integration](ESG_Publisher_Integration.pdf)
+[ESG Publisher integration](https://github.com/ES-DOC/esdoc-cdf2cim/blob/master/ESG_Publisher_Integration.pdf)
 
 Further Information ?
 --------------------------------------
