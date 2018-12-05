@@ -14,6 +14,7 @@ import collections
 
 from cdf2cim import parser
 
+import cf
 
 
 def execute(targets):
@@ -43,5 +44,8 @@ def execute(targets):
         cim2_properties.pop(None, None)
     	simulation_dates[identifier].extend(dates)
         simulations[identifier].append(cim2_properties)
+
+        # close file to prevent a proliferation of open file handles
+        cf.close_one_file()
 
     return simulations, simulation_dates
