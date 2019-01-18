@@ -26,7 +26,7 @@ _REQUIRES = [
     'nose',
     'numpy>=1.7',
     'netCDF4>=1.2.1',
-    'requests',
+    'requests==2.20.0',
     'psutil>=0.6.0'
     ]
 
