@@ -200,7 +200,7 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     # ----------------------------------------------------------------
     activity_id = global_attributes.get('activity_id')
     if activity_id is not None:
-        cim2_properties['activity_id'] = tuple(activity_id.split())
+        cim2_properties['activity_id'] = tuple(sorted(activity_id.split()))
 
 def _get_mip_era(global_attributes):
     """Returns mip era associated with a file.
