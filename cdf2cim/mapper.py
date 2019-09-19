@@ -88,13 +88,13 @@ def execute(identifier, properties, dates):
 
 
 def _get_simulation_start_end_dates(dates, calendar):
-    """Returns the start and end times of the simulation and return them as ISO8601-like strings.
+    """Returns start and end times of the simulation and return them as ISO8601-like strings.
 
     """
     if dates:
         date = sorted(set(dates))
-        units = cf.Units('days since '+str(dates[0]), calendar)
+        units = cf.Units('days since ' + compat.str(dates[0]), calendar)
         dates = cf.Data(dates, units, dt=True)
-        return str(dates.min().dtarray[0]), str(dates.max().dtarray[0])
+        return compat.str(dates.min().dtarray[0]), compat.str(dates.max().dtarray[0])
 
     return (None, None)
