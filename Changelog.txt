@@ -1,0 +1,14 @@
+Version 0.3.3.0 (2019-02-06)
+----------------------------
+
+* Convert "activity_id" to a tuple of one or more strings.
+
+Version 0.3.2.0 (2019-01-18)
+----------------------------
+
+* Specify requests version in setup.py
+
+Version 0.3.1.0 (2018-12-05)
+----------------------------
+
+* Fix for proliferation of file handles

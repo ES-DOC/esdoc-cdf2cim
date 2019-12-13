@@ -32,6 +32,7 @@ def execute(identifier, properties, dates):
         'experiment_id' : [],
         'forcing'       : [],
         'variant_info'  : [],
+        'activity_id'   : [],
     }
 
     for p in properties:

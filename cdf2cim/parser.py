@@ -195,6 +195,12 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
         x = cf.Data([branch_time_in_child], units=time_coords.Units).dtarray[0]
         cim2_properties['branch_time_in_child'] = str(x)
 
+    # ----------------------------------------------------------------
+    # CIM2 activity_id
+    # ----------------------------------------------------------------
+    activity_id = global_attributes.get('activity_id')
+    if activity_id is not None:
+        cim2_properties['activity_id'] = tuple(sorted(activity_id.split()))
 
 def _get_mip_era(global_attributes):
     """Returns mip era associated with a file.
@@ -204,7 +210,6 @@ def _get_mip_era(global_attributes):
         return constants.CMIP6
     elif global_attributes.get('project_id') == constants.CMIP5:
         return constants.CMIP5
-
 
 def _get_simulation_id(cim2_properties):
     """Returns a canonical simulation identifier.
