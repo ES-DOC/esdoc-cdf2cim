@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 """
-.. module:: io.py
+.. module:: io_manager.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
    :synopsis: Enapsulates package IO operations.
@@ -11,11 +9,9 @@
 
 """
 import collections
-import glob
 import json
 import os
 import shutil
-import uuid
 
 import cf
 import numpy
@@ -47,12 +43,11 @@ def encode(obj):
         """
         if isinstance(value, numpy.float64):
             return float(value)
-        elif isinstance(value, numpy.int32):
+        if isinstance(value, numpy.int32):
             return int(value)
-        elif key.endswith("_index"):
+        if key.endswith("_index"):
             return int(value)
-        else:
-            return value
+        return value
 
     result = collections.OrderedDict()
     for k in sorted(obj.keys()):
@@ -64,8 +59,8 @@ def encode(obj):
 def yield_files(criteria):
     """Yields files implied by the criteria.
 
-    :param str|sequence criteria: Pointer(s) to file(s) and/or directorie(s). Directories (including symbolic links) are searched recursively.
-
+    :param str|sequence criteria: Pointer(s) to file(s) and/or directorie(s). Directories (including
+                                  symbolic links) are searched recursively.
     :returns: Generator yielding files for processing.
     :rtype: generator
 
@@ -152,16 +147,17 @@ def dump(obj, overwrite):
     fname = "{}.json".format(metadata['_hash_id'])
     fpath = os.path.join(dpath, fname)
 
-    # Escape if already scanned/published;
-    if not overwrite:
-        if os.path.isfile(fpath):
-            return (FILE_STATUS_SCANNED_QUEUED, fpath)
-        else:
-            fpath_published = fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED)
-            if os.path.isfile(fpath_published):
-                return (FILE_STATUS_PUBLISHED, fpath_published)
+    # Escape if already scanned;
+    if not overwrite and os.path.isfile(fpath):
+        return (FILE_STATUS_SCANNED_QUEUED, fpath)
 
-    # Write to file system.
+    # Escape if already published;
+    if not overwrite:
+        fpath_published = fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED)
+        if os.path.isfile(fpath_published):
+            return (FILE_STATUS_PUBLISHED, fpath_published)
+
+    # Write to file system as newly scanned item.
     if not os.path.isdir(dpath):
         os.makedirs(dpath)
     with open(fpath, 'w') as fstream:
@@ -174,7 +170,6 @@ def yield_scanned_files():
     """Yields set of scanned files for further processing.
 
     """
-    result = []
     for dpath, _, fnames in os.walk(IO_DIR_SCANNED):
         for fname in fnames:
             yield os.path.join(dpath, fname)

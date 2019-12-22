@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 .. module:: publisher.py
    :license: GPL/CeCIL

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 .. module:: exceptions.py
    :license: GPL/CeCIL
@@ -76,4 +74,5 @@ class WebServiceProcessingError(Exception):
         """Instance constructor.
 
         """
-        super(WebServiceProcessingError, self).__init__("WEB-SERVICE ERROR: {} :: {}".format(http_status_code, err))
+        msg = "WEB-SERVICE ERROR: {} :: {}".format(http_status_code, err)
+        super(WebServiceProcessingError, self).__init__(msg)

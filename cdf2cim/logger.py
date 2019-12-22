@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-.. module:: utils.logger.py
+.. module:: logger.py
    :license: GPL/CeCIL
    :platform: Unix
    :synopsis: Logging utility functions.

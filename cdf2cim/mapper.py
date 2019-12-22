@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 .. module:: mapper.py
    :license: GPL/CeCIL

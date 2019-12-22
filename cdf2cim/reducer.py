@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 .. module:: reducer.py
    :license: GPL/CeCIL

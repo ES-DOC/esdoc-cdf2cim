@@ -1,15 +1,24 @@
-"""Functions to parse datetime objects."""
+"""
+.. module:: compat2_datetime.py
+   :copyright: Copyright "Feb 7, 2013", Earth System Documentation
+   :license: GPL/CeCIL
+   :platform: Unix, Windows
+   :synopsis: python 2 to 3 datetime parsing functions.
 
-# We're using regular expressions rather than time.strptime because:
+.. moduleauthor:: Mark Conway-Greenslade <momipsl@ipsl.jussieu.fr>
+
+"""
+
+# NOTE - regular expressions used rather than time.strptime because:
 # - They provide both validation and parsing.
 # - They're more flexible for datetimes.
 # - The date/datetime/time constructors produce friendlier error messages.
+
 
 import datetime
 import re
 
 # UTC and local time zones
-
 ZERO = datetime.timedelta(0)
 
 
