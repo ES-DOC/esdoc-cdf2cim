@@ -22,11 +22,12 @@ from setuptools.dist import Distribution
 
 # List of 3rd party python dependencies.
 _REQUIRES = [
-    'cf-python>=3.4.1',
+    'cf-python>=3.4.0',
     'nose',
     'numpy>=1.7',
     'netCDF4>=1.5.3',
-    'cftime>=1.1.3',
+    'cftime==1.1.1',
+    'cfdm==1.8.3',
     'requests==2.20.0',
     'psutil>=0.6.0'
     ]
