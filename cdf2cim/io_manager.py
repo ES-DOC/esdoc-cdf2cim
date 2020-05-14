@@ -106,17 +106,20 @@ def yield_cf_files(targets):
     """
     for fpath in yield_files(targets):
         try:
-            cf_files = cf.read(fpath, ignore_read_error=False, verbose=False, aggregate=False)
+            cf_files = cf.read(fpath, ignore_read_error=False,
+                               aggregate=False, verbose=0)
         except (IOError, OSError):
             logger.log_warning("Non netCDF file rejected: {}".format(fpath))
         else:
-            # Save the netCDF file name (from which we can extract the dataset version)
+            # Save the netCDF file name (from which we can extract the
+            # dataset version)
             for cf_file in cf_files:
                 cf_file.fpath = fpath
 
             yield cf_files
 
-            # ... close file to prevent a proliferation of open file handles
+            # ... close file to prevent a proliferation of open file
+            # handles
             cf.close_one_file()
 
 

@@ -17,7 +17,6 @@ from cdf2cim import constants
 from cdf2cim.io_manager import yield_cf_files
 
 
-
 def yield_parsed(targets):
     """Yields simulation information derived from a parse of cf files.
 
@@ -66,7 +65,7 @@ def parse(cf_field):
     elif mip_era == constants.CMIP5:
         simple_mapping = constants.CMIP5_TO_CIM2
 
-    for file_prop, cim2_prop in simple_mapping.iteritems():
+    for file_prop, cim2_prop in simple_mapping.items():
         if file_prop in global_attributes:
             cim2_properties[cim2_prop] = global_attributes[file_prop]
 
@@ -82,18 +81,23 @@ def parse(cf_field):
 
     # Parse non-simple mappable properties.
     if mip_era == constants.CMIP6:
-        _parse_cmip6_properties(cim2_properties, global_attributes, time_coords)
+        _parse_cmip6_properties(cim2_properties,
+                                global_attributes, time_coords)
     elif mip_era == constants.CMIP5:
-        _parse_cmip5_properties(cim2_properties, global_attributes, time_coords)
+        _parse_cmip5_properties(cim2_properties,
+                                global_attributes, time_coords)
 
     return _get_simulation_id(cim2_properties), cim2_properties, dates
 
 
 def _get_field_start_end_dates(time_coords):
-    """Returns earliest and latest date-time objects from a time coordinate.
+    """Returns earliest and latest date-time objects from a time
+    coordinate.
 
     """
-    if time_coords is None or not time_coords.Units.isreftime or time_coords.ndim > 1:
+    if (time_coords is None
+        or not time_coords.Units.isreftime
+        or time_coords.ndim > 1):
         # No (suitable) time coordinates - ignore this field
         return []
 
@@ -103,19 +107,20 @@ def _get_field_start_end_dates(time_coords):
     else:
         index = [0, -1]
 
-    if time_coords.hasbounds:
+    if time_coords.has_bounds():
         # Get the time span from the time coordinate bounds
-        dates = time_coords.bounds.subspace[index].dtarray.flat
+        dates = time_coords.bounds[index].dtarray.flat
     else:
         # In the absence of bounds, get the time span from the
         # time coordinates
-        dates = time_coords.subspace[index].dtarray.flat
+        dates = time_coords[index].dtarray.flat
 
     return dates
 
 
 def _get_calendar(time_coords):
-    """Returns calendar type from time co-ordinates (defaults to gregorian).
+    """Returns calendar type from time co-ordinates (defaults to
+    gregorian).
 
     """
     return getattr(time_coords, 'calendar', 'gregorian')
@@ -124,9 +129,7 @@ def _get_calendar(time_coords):
 def _parse_cmip5_properties(cim2_properties, global_attributes, time_coords):
     """Extends cim2 proeprty set with CMIP5 specific properties.
 
-
     """
-
     # Get rid of of attributes whose value is "N/A". Could be forcing,
     # parent_experiment_id. (parent_experiment_rip is dealt with
     # separately.)
@@ -139,11 +142,11 @@ def _parse_cmip5_properties(cim2_properties, global_attributes, time_coords):
              'parent_initialization_index',
              'parent_physics_index',
              'parent_forcing_index'],
-            map(int, re.findall('\d+', global_attributes.get('parent_experiment_rip', 'N/A')))))
+            map(int, re.findall(
+                '\d+',global_attributes.get('parent_experiment_rip', 'N/A')))))
 
 def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     """Extends cim2 proeprty set with CMIP6 specific properties.
-
 
     """
     cim2_properties.update(
@@ -151,7 +154,9 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
              'parent_initialization_index',
              'parent_physics_index',
              'parent_forcing_index'],
-            map(int, re.findall('\d+', global_attributes.get('parent_variant_label', 'none')))))
+            map(int, re.findall(
+                '\d+', global_attributes.get(
+                    'parent_variant_label', 'none')))))
 
     # parent_time_units
     parent_time_units = global_attributes.get('parent_time_units')
@@ -178,7 +183,8 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
             # print "WARNING: branch_time_in_parent is a string, converting to float"
             branch_time_in_parent = float(branch_time_in_parent)
 
-        x = cf.Data([branch_time_in_parent], units=parent_time_units).dtarray[0]
+        x = cf.Data([branch_time_in_parent],
+                    units=parent_time_units).dtarray[0]
         cim2_properties['branch_time_in_parent'] = compat.str(x)
 
     # ----------------------------------------------------------------
@@ -214,11 +220,13 @@ def _get_simulation_id(cim2_properties):
     """Returns a canonical simulation identifier.
 
     """
-    return tuple([(k, v) for k, v in cim2_properties.iteritems()
-                  if k not in ('contact',
-                               'references',
-                               'forcing',
-                               'variant_info',
-                               'dataset_versions',
-                               'filenames',)
-              ])
+    return tuple(
+        [(k, v) for k, v in cim2_properties.items()
+         if k not in ('contact',
+                      'references',
+                      'forcing',
+                      'variant_info',
+                      'dataset_versions',
+                      'filenames',)
+        ]
+    )

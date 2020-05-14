@@ -25,25 +25,25 @@ def execute(targets):
 	:rtype: tuple
 
     """
-    # Map of simulation identifiers to a list of dictionaries
-    # (each of which describes a single file of the simulation).
+    # Map of simulation identifiers to a list of dictionaries (each of
+    # which describes a single file of the simulation).
     simulations = collections.defaultdict(list)
 
-    # Map of simulation identifiers to a list of date-time objects which
-    # collectively define the time span of the simulation.
+    # Map of simulation identifiers to a list of date-time objects
+    # which collectively define the time span of the simulation.
     simulation_dates = collections.defaultdict(list)
 
     # ----------------------------------------------------------------
-    # Split the input files into groups so that all of the files in
-    # a group belong to the same simulation
+    # Split the input files into groups so that all of the files in a
+    # group belong to the same simulation
     # ----------------------------------------------------------------
     # For each CF field in this input file ...
     for _, identifier, cim2_properties, dates in parser.yield_parsed(targets):
         cim2_properties.pop(None, None)
-    	simulation_dates[identifier].extend(dates)
+        simulation_dates[identifier].extend(dates)
         simulations[identifier].append(cim2_properties)
 
-        # close file to prevent a proliferation of open file handles
+        # Close file to prevent a proliferation of open file handles
         cf.close_one_file()
 
     return simulations, simulation_dates

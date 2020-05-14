@@ -2,6 +2,7 @@
 .. module:: mapper.py
    :license: GPL/CeCIL
    :platform: Unix, Windows
+
    :synopsis: Maps parsed CF file info to a dictionary that will subsequently be transformed to CIM documents.
 
 .. moduleauthor:: David Hassell <david.hassell@ncas.ac.uk>
@@ -10,7 +11,7 @@
 """
 import cf
 
-
+from .compat import str as _str
 
 def execute(identifier, properties, dates):
     """Reduces mapped simulation.
@@ -19,7 +20,8 @@ def execute(identifier, properties, dates):
     cim2_properties = properties[0].copy()
 
     # Find the start and end dates of the whole simulation
-    start_date, end_date = _get_simulation_start_end_dates(dates, cim2_properties['calendar'])
+    start_date, end_date = _get_simulation_start_end_dates(
+        dates, cim2_properties['calendar'])
     if start_date:
         cim2_properties['start_time'] = start_date
         cim2_properties['end_time']   = end_date
@@ -34,10 +36,10 @@ def execute(identifier, properties, dates):
     }
 
     for p in properties:
-        for x, v in extra1.iteritems():
+        for x, v in extra1.items():
             v.append(p.get(x))
 
-    for prop, v in extra1.iteritems():
+    for prop, v in extra1.items():
         v = set(v)
         v.discard(None)
         if len(v) == 1:
@@ -51,10 +53,10 @@ def execute(identifier, properties, dates):
     }
 
     for p in properties:
-        for x, v in extra2.iteritems():
+        for x, v in extra2.items():
             v.append(p.get(x))
 
-    for prop, v in extra2.iteritems():
+    for prop, v in extra2.items():
         v = set(v)
         v.discard(None)
         if v:
@@ -68,10 +70,10 @@ def execute(identifier, properties, dates):
     }
 
     for p in properties:
-        for x, v in extra3.iteritems():
+        for x, v in extra3.items():
             v.append(p.get(x))
 
-    for prop, v in extra3.iteritems():
+    for prop, v in extra3.items():
         v = set(v)
         v.discard(None)
         if v:
@@ -86,13 +88,17 @@ def execute(identifier, properties, dates):
 
 
 def _get_simulation_start_end_dates(dates, calendar):
-    """Returns start and end times of the simulation and return them as ISO8601-like strings.
+    """Returns start and end times of the simulation and return them as
+    ISO8601-like strings.
 
     """
     if dates:
         date = sorted(set(dates))
-        units = cf.Units('days since ' + compat.str(dates[0]), calendar)
-        dates = cf.Data(dates, units, dt=True)
-        return compat.str(dates.min().dtarray[0]), compat.str(dates.max().dtarray[0])
+        units = cf.Units('days since ' + _str(dates[0]), calendar)
+        dates = cf.Data(dates, units=units, dt=True)
+        return (
+            _str(dates.min().dtarray[0]),
+            _str(dates.max().dtarray[0])
+        )
 
     return (None, None)

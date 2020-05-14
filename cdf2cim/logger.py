@@ -10,7 +10,7 @@
 """
 import datetime as dt
 
-import compat
+from .compat import *
 
 
 # Set of logging levels.

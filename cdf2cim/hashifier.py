@@ -20,7 +20,9 @@ def hashify(metadata):
 
     """
     hash_id = hashlib.md5(json.dumps(metadata)).hexdigest()
-    hash_id = "{}{}{}".format(hash_id, metadata['start_time'], metadata['end_time'])
+    hash_id = "{}{}{}".format(hash_id,
+                              metadata['start_time'],
+                              metadata['end_time'])
     hash_id = hashlib.md5(hash_id).hexdigest()
 
     return hash_id

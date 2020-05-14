@@ -61,7 +61,7 @@ def find(inputs):
     simulations, simulation_dates = _reduce(inputs)
 
     # Yield mapped outputs.
-    for identifier, properties in simulations.iteritems():
+    for identifier, properties in simulations.items():
         yield _map(identifier, properties, simulation_dates[identifier])
 
 

@@ -24,7 +24,6 @@ from cdf2cim.options import WS_HOST
 from cdf2cim.options import WS_USER
 
 
-
 def execute(fpath):
     """Uploads target to cdf2cim web-service.
 
@@ -62,7 +61,8 @@ def execute(fpath):
 
 
 def verify_credentials():
-    """Verifies that passed credentials are deemed valid by ES-DOC cdf2cim web-service.
+    """Verifies that passed credentials are deemed valid by ES-DOC cdf2cim
+    web-service.
 
     """
     # Prepare request info.
