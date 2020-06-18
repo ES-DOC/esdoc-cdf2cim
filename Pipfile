@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+cf-python = "*"
+numpy = "*"
+psutil = "*"
+requests = "*"
+tox = "*"
+netCDF4 = "*"
+pytest = "*"
+
+[requires]
+python_version = "3.8"

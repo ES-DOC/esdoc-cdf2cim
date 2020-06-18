@@ -10,7 +10,6 @@
 """
 import datetime as dt
 
-from .compat import *
 
 
 # Set of logging levels.
@@ -72,8 +71,8 @@ def _get_formatted_message(msg, level):
         return _NULL_MSG
 
     return "{} [{}] :: ES-DOC > {} :: {}".format(
-        compat.str(dt.datetime.utcnow())[0:19],
+        str(dt.datetime.utcnow())[0:19],
         level,
         _MODULE,
-        compat.str(msg).strip()
+        str(msg).strip()
         )

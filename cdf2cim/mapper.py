@@ -11,7 +11,7 @@
 """
 import cf
 
-from .compat import str as _str
+
 
 def execute(identifier, properties, dates):
     """Reduces mapped simulation.
@@ -94,11 +94,11 @@ def _get_simulation_start_end_dates(dates, calendar):
     """
     if dates:
         date = sorted(set(dates))
-        units = cf.Units('days since ' + _str(dates[0]), calendar)
+        units = cf.Units('days since ' + str(dates[0]), calendar)
         dates = cf.Data(dates, units=units, dt=True)
         return (
-            _str(dates.min().dtarray[0]),
-            _str(dates.max().dtarray[0])
+            str(dates.min().dtarray[0]),
+            str(dates.max().dtarray[0])
         )
 
     return (None, None)

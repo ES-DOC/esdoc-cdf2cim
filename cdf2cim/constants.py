@@ -34,8 +34,9 @@ HTTP_RESPONSE_AUTHENTICATION_ERROR = 401
 HTTP_RESPONSE_AUTHORIZATION_ERROR = 403
 
 # I/O directories.
-IO_DIR = "{}/cdf2cim".format(os.getenv(ENV_VAR_IO_DIR) or \
-                             "{}/.esdoc".format(os.getenv("HOME")))
+IO_DIR = "{}/cdf2cim".format(
+    os.getenv(ENV_VAR_IO_DIR) or "{}/.esdoc".format(os.getenv("HOME"))
+    )
 IO_DIR_SCANNED = "{}/scanned".format(IO_DIR)
 IO_DIR_PUBLISHED = "{}/published".format(IO_DIR)
 

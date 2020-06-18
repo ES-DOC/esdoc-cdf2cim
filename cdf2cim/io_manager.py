@@ -16,7 +16,6 @@ import shutil
 import cf
 import numpy
 
-from cdf2cim import compat
 from cdf2cim import exceptions
 from cdf2cim import hashifier
 from cdf2cim import logger
@@ -68,13 +67,13 @@ def yield_files(criteria):
 
     """
     # Convert to sequence (if necessary).
-    if isinstance(criteria, compat.basestring):
+    if isinstance(criteria, (str, bytes)):
         criteria = [criteria]
 
     # Exception if passed invalid pointers.
     if not isinstance(criteria, collections.Iterable):
         raise exceptions.InvalidFileSearchCriteria(criteria)
-    if [i for i in criteria if not isinstance(i, compat.basestring)]:
+    if [i for i in criteria if not isinstance(i, (str, bytes))]:
         raise exceptions.InvalidFileSearchCriteria(criteria)
     if [i for i in criteria if not os.path.exists(i)]:
         raise exceptions.InvalidFileSearchCriteria(criteria)

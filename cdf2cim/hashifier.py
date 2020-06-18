@@ -19,10 +19,9 @@ def hashify(metadata):
     :param dict metadata: Simulation metadata.
 
     """
-    hash_id = hashlib.md5(json.dumps(metadata)).hexdigest()
-    hash_id = "{}{}{}".format(hash_id,
-                              metadata['start_time'],
-                              metadata['end_time'])
-    hash_id = hashlib.md5(hash_id).hexdigest()
+    metadata_as_text = json.dumps(metadata)
+    hash_id = hashlib.md5(metadata_as_text.encode('utf-8')).hexdigest()
+    hash_id = f"{hash_id}{metadata['start_time']}{metadata['end_time']}"
+    hash_id = hashlib.md5(hash_id.encode('utf-8')).hexdigest()
 
     return hash_id

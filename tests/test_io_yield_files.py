@@ -36,7 +36,7 @@ def test_invalid_criteria():
             123,
             uuid.uuid4,
             uuid.uuid4(),
-            unicode(uuid.uuid4()),
+            str(uuid.uuid4()),
             os.path.join(NETCDF_DIR, 'xxx')
         }:
         try:

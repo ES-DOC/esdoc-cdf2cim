@@ -13,7 +13,7 @@
 import json
 import os
 
-import nose
+import pytest
 
 import cdf2cim
 from utils import *
@@ -32,7 +32,8 @@ def test_encode():
         assert isinstance(cdf2cim.io_manager.encode(obj), dict)
 
 
-@nose.tools.raises(TypeError)
+
+
 def test_json_conversion_failure():
     """ES-DOC :: cdf2cim :: io :: raw dictionary is not JSON encodeable.
 

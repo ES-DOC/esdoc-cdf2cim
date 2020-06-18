@@ -12,9 +12,9 @@ import re
 
 import cf
 
-from cdf2cim import compat
 from cdf2cim import constants
 from cdf2cim.io_manager import yield_cf_files
+
 
 
 def yield_parsed(targets):
@@ -178,14 +178,14 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     # ----------------------------------------------------------------
     branch_time_in_parent = global_attributes.get('branch_time_in_parent')
     if branch_time_in_parent is not None:
-        if isinstance(branch_time_in_parent, compat.basestring):
+        if isinstance(branch_time_in_parent, (str, bytes)):
             # Fix in case branch_time_in_parent is a string
             # print "WARNING: branch_time_in_parent is a string, converting to float"
             branch_time_in_parent = float(branch_time_in_parent)
 
         x = cf.Data([branch_time_in_parent],
                     units=parent_time_units).dtarray[0]
-        cim2_properties['branch_time_in_parent'] = compat.str(x)
+        cim2_properties['branch_time_in_parent'] = str(x)
 
     # ----------------------------------------------------------------
     # CIM2 branch_time_in_child
@@ -198,7 +198,7 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
             branch_time_in_child = float(branch_time_in_child)            
 
         x = cf.Data([branch_time_in_child], units=time_coords.Units).dtarray[0]
-        cim2_properties['branch_time_in_child'] = compat.str(x)
+        cim2_properties['branch_time_in_child'] = str(x)
 
     # ----------------------------------------------------------------
     # CIM2 activity_id
