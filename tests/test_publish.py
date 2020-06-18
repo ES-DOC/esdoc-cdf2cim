@@ -14,10 +14,6 @@ from utils import *
 
 
 
-def setup_method():
-    shutil.rmtree(IO_DIR)
-
-
 def test_is_function():
     """ES-DOC :: cdf2cim :: publish :: cdf2cim.publish function is supported.
 
@@ -29,6 +25,7 @@ def test_publish_cmip5():
     """ES-DOC :: cdf2cim :: publish :: cmip5.
 
     """
+    shutil.rmtree(IO_DIR)
     _test_publish(CMIP5_NETCDF_DIR)
 
 
@@ -36,6 +33,7 @@ def test_publish_cmip6():
     """ES-DOC :: cdf2cim :: publish :: cmip6.
 
     """
+    shutil.rmtree(IO_DIR)
     _test_publish(CMIP6_NETCDF_DIR)
 
 
