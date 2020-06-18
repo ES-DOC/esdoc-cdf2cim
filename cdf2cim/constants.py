@@ -75,55 +75,71 @@ CMIP6 = 'CMIP6'
 # requires some preprocessing before being used
 # (e.g. 'parent_source_id')
 # --------------------------------------------------------------------
-CMIP6_TO_CIM2 = {
-    # CMIP6 attribute           CIM2 Simulation property
-    'activity_id'             : None,                    # E.g. 'CMIP, 'PMIP', 'LS3MIP LUMIP'
-    'branch_method'           : None,                    # E.g. 'standard', 'none provided'
-    'branch_time_in_child'    : None,                    # E.g. 365.0D0, 0.0D0
-    'branch_time_in_parent'   : None,                    # E.g. 3650.0D0
-    'comment'                 : None,
-    'contact'                 : 'contact',
-    'Conventions'             : None,                    # E.g. 'CF-1.7 CMIP-6.0', 'CF-1.7 CMIP-6.0 UGRID-0.9'
-    'creation_date'           : None,
-    'data_specs_version'      : None,
-    'experiment'              : None,                    # E.g. 'pre-industrial control',  'abrupt quadrupling of CO2'
-    'experiment_id'           : 'experiment_id',         # E.g. 'historical', 'abrupt4xCO2'
-    'external_variables'      : None,                    # E.g. 'areacello'
-    'forcing_index'           : 'forcing_index',         # E.g. 2
-    'frequency'               : None,                    # E.g. 'day'
-    'further_info_url'        : 'further_info_url',      # E.g. 'http://furtherinfo.es-doc.org/cmip6.MOHC.HadCM3.historical.none.r3i1p1f1'
-    'grid'                    : None,
-    'grid_label'              : None,
-    'grid_resolution'         : None,
-    'history'                 : None,
-    'initialization_index'    : 'initialization_index',  # E.g. 1
-    'institution'             : None,                    # E.g. 'Meteorological Research Institute'
-    'institution_id'          : 'institution_id',        # E.g. 'IPSL'
-    'license'                 : None,
-    'mip_era'                 : 'mip_era',               # E.g. 'CMIP6', 'CMIP7'
-    'parent_activity_id'      : None,                    # E.g. 'CMIP'
-    'parent_experiment_id'    : None,                    # E.g. 'piControl'
-    'parent_mip_era'          : None,                    # E.g. 'CMIP5', 'CMIP6'
-    'parent_source_id'        : None,                    # E.g. 'CanCM4'
-    'parent_time_units'       : None,                    # E.g. 'days since 1850-1-1', 'days since 1000-1-1 (noleap)'
-    'parent_variant_label'    : None,                    # E.g. 'r1i1p1f1', 'r1i2p223f3', 'no parent'
-    'physics_index'           : 'physics_index',         # E.g. 3
-    'product'                 : None,                    # E.g. 'output'
-    'realization_index'       : 'realization_index',     # E.g. 5
-    'realm'                   : None,                    # E.g. 'atmos', 'ocean', 'atmosChem atmos'
-    'references'              : 'references',
-    'source'                  : None,                    # E.g. 'GFDL CM2.1: cycle 2.1.14'
-    'source_id'               : 'source_id',             # E.g. 'GFDL-CM2-1'
-    'source_type'             : None,                    # E.g. 'AGCM', 'OGCM', 'AOGCM', 'ISM', 'AOGCM ISM'
-    'sub_experiment'          : None,
-    'sub_experiment_id'       : 'sub_experiment_id',     # E.g. 's1960', 's1965', 'none'
-    'table_id'                : None,                    # E.g. 'Amon'
-    'title'                   : None,
-    'tracking_id'             : None,
-    'variable_id'             : None,                    # E.g. 'tas', 'pr', 'ua'
-    'variant_info'            : 'variant_info',          # E.g. 'forcing: black carbon aerosol only'
-    'variant_label'           : None,                    # E.g. 'r1i1p1f1', 'f1i2p223f3'
-}
+
+# Each key here becomes '<key>: <key>' entry in final mapping:
+CMIP6_TO_CIM2_MAP_TO_SELF = [
+    'contact',
+    'experiment_id',          # E.g. 'historical', 'abrupt4xCO2'
+    'forcing_index',          # E.g. 2
+    'further_info_url',       # E.g. (see below for example)
+    'initialization_index',   # E.g. 1
+    'institution_id',         # E.g. 'IPSL'
+    'mip_era',                # E.g. 'CMIP6', 'CMIP7'
+    'physics_index',          # E.g. 3
+    'realization_index',      # E.g. 5
+    'references',
+    'source_id',              # E.g. 'GFDL-CM2-1'
+    'sub_experiment_id',      # E.g. 's1960', 's1965', 'none'
+    'variant_info',           # E.g. 'forcing: black carbon aerosol only'
+]
+
+# Each key here becomes '<key>: None' entry in final mapping:
+CMIP6_TO_CIM2_MAP_TO_NONE = [
+    'activity_id',            # E.g. 'CMIP, 'PMIP', 'LS3MIP LUMIP'
+    'branch_method',          # E.g. 'standard', 'none provided'
+    'branch_time_in_child',   # E.g. 365.0D0, 0.0D0
+    'branch_time_in_parent',  # E.g. 3650.0D0
+    'comment',
+    'Conventions',            # E.g. 'CF-1.7 CMIP-6.0',
+                              #      'CF-1.7 CMIP-6.0 UGRID-0.9'
+    'creation_date',
+    'data_specs_version',
+    'experiment',             # E.g. 'pre-industrial control',
+                              #      'abrupt quadrupling of CO2'
+    'external_variables',     # E.g. 'areacello'
+    'frequency',
+    'grid',
+    'grid_label' ,
+    'grid_resolution',
+    'history',
+    'institution',            # E.g. 'Meteorological Research Institute'
+    'license',
+    'parent_activity_id',     # E.g. 'CMIP'
+    'parent_experiment_id',   # E.g. 'piControl'
+    'parent_mip_era',         # E.g. 'CMIP5', 'CMIP6'
+    'parent_source_id',       # E.g. 'CanCM4'
+    'parent_time_units',      # E.g. 'days since 1850-1-1',
+                              #      'days since 1000-1-1 (noleap)'
+    'parent_variant_label' ,  # E.g. 'r1i1p1f1', 'r1i2p223f3', 'no parent'
+    'product',                # E.g. 'output'
+    'realm',                  # E.g. 'atmos', 'ocean', 'atmosChem atmos'
+    'source',                 # E.g. 'GFDL CM2.1: cycle 2.1.14'
+    'source_type',            # E.g. 'AGCM', 'OGCM', 'AOGCM', 'ISM',
+                              #      'AOGCM ISM'
+    'sub_experiment',
+    'table_id',               # E.g. 'Amon'
+    'title',
+    'tracking_id',
+    'variable_id',            # E.g. 'tas', 'pr', 'ua'
+    'variant_label',          # E.g. 'r1i1p1f1', 'f1i2p223f3'
+]
+
+# CMIP6 attribute to CIM2 Simulation property
+# [when in Python 3, just use {**a, **b} instead of dict(a.items() + ...)]
+CMIP6_TO_CIM2 = dict(
+    {name: name for name in CMIP6_TO_CIM2_MAP_TO_SELF}.items() +
+    {name: None for name in CMIP6_TO_CIM2_MAP_TO_NONE}.items()
+)
 
 # --------------------------------------------------------------------
 # Dictionary of CMIP5 to CIM2 mappings. key = CMIP5 netCDF gloabl
@@ -134,23 +150,37 @@ CMIP6_TO_CIM2 = {
 # requires some preprocessing before being used
 # (e.g. 'parent_experiment_rip')
 # --------------------------------------------------------------------
-CMIP5_TO_CIM2 = {
-    # CMIP5 attribute           CIM2 Simulation property
-    'branch_time'             : 'branch_time_in_parent',
-    'contact'                 : 'contact',
-    'experiment_id'           : 'experiment_id',
-    'forcing'                 : 'forcing',
-    'initialization_method'   : 'initialization_index',
-    'institute_id'            : 'institution_id',
-    'model_id'                : 'source_id',
-    'project_id'              : 'mip_era',
-    'parent_experiment_id'    : 'parent_experiment_id',
-    'parent_experiment_rip'   : None,
-    'physics_version'         : 'physics_index',
-    'references'              : 'references',
-    'source'                  : 'source',
-    'realization'             : 'realization_index',
-}
+
+CMIP5_TO_CIM2_MAP_TO_SELF = [
+    'contact',
+    'experiment_id',
+    'forcing',
+    'institute_id',
+    'parent_experiment_id',
+    'references',
+    'source',
+]
+
+CMIP5_TO_CIM2_MAP_TO_NONE = [
+    'parent_experiment_rip',
+]
+
+# CMIP5 attribute to CIM2 Simulation property
+# [when in Python 3, just use {**a, **b} instead of dict(a.items() + ...)]
+CMIP5_TO_CIM2 = dict(
+    {name: name for name in CMIP5_TO_CIM2_MAP_TO_SELF}.items() +
+    {name: None for name in CMIP5_TO_CIM2_MAP_TO_NONE}.items() +
+    {
+        # CMIP5 attribute           CIM2 Simulation property
+        'branch_time'             : 'branch_time_in_parent',
+        'initialization_method'   : 'initialization_index',
+        'model_id'                : 'source_id',
+        'physics_version'         : 'physics_index',
+        'project_id'              : 'mip_era',
+        'realization'             : 'realization_index',
+    }.items()
+)
+
 
 # --------------------------------------------------------------------
 # CMIP6 file properties from which a simulation id can be constructed
