@@ -136,10 +136,10 @@ CMIP6_TO_CIM2_MAP_TO_NONE = [
 
 # CMIP6 attribute to CIM2 Simulation property
 # [when in Python 3, just use {**a, **b} instead of dict(a.items() + ...)]
-CMIP6_TO_CIM2 = dict(
-    {name: name for name in CMIP6_TO_CIM2_MAP_TO_SELF}.items() +
-    {name: None for name in CMIP6_TO_CIM2_MAP_TO_NONE}.items()
-)
+CMIP6_TO_CIM2 = {
+    **{name: name for name in CMIP6_TO_CIM2_MAP_TO_SELF},
+    **{name: None for name in CMIP6_TO_CIM2_MAP_TO_NONE}
+}
 
 # --------------------------------------------------------------------
 # Dictionary of CMIP5 to CIM2 mappings. key = CMIP5 netCDF gloabl
@@ -155,7 +155,6 @@ CMIP5_TO_CIM2_MAP_TO_SELF = [
     'contact',
     'experiment_id',
     'forcing',
-    'institute_id',
     'parent_experiment_id',
     'references',
     'source',
@@ -167,20 +166,20 @@ CMIP5_TO_CIM2_MAP_TO_NONE = [
 
 # CMIP5 attribute to CIM2 Simulation property
 # [when in Python 3, just use {**a, **b} instead of dict(a.items() + ...)]
-CMIP5_TO_CIM2 = dict(
-    {name: name for name in CMIP5_TO_CIM2_MAP_TO_SELF}.items() +
-    {name: None for name in CMIP5_TO_CIM2_MAP_TO_NONE}.items() +
-    {
+CMIP5_TO_CIM2 = {
+    **{name: name for name in CMIP5_TO_CIM2_MAP_TO_SELF},
+    **{name: None for name in CMIP5_TO_CIM2_MAP_TO_NONE},
+    **{
         # CMIP5 attribute           CIM2 Simulation property
         'branch_time'             : 'branch_time_in_parent',
         'initialization_method'   : 'initialization_index',
+        'institute_id'            : 'institution_id',
         'model_id'                : 'source_id',
         'physics_version'         : 'physics_index',
         'project_id'              : 'mip_era',
         'realization'             : 'realization_index',
-    }.items()
-)
-
+    }
+}
 
 # --------------------------------------------------------------------
 # CMIP6 file properties from which a simulation id can be constructed
