@@ -24,3 +24,4 @@ tmp
 test-output
 .tox
 .python-version
+*.lock
