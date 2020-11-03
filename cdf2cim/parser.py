@@ -14,7 +14,7 @@ import cf
 
 from cdf2cim import constants
 from cdf2cim.io_manager import yield_cf_files
-
+from cdf2cim import logger
 
 
 def yield_parsed(targets):
@@ -28,7 +28,11 @@ def yield_parsed(targets):
     """
     for cf_fields in yield_cf_files(targets):
         for cf_field in cf_fields:
-            identifier, properties, dates = parse(cf_field)
+            try:
+                identifier, properties, dates = parse(cf_field)
+            except:
+                logger.log("Debug: Failed while parsing: {}".format(cf_field.fpath))
+                raise
             if identifier:
                 yield cf_field, identifier, properties, dates
         # ... close file to prevent a proliferation of open file handles
@@ -44,14 +48,26 @@ def parse(cf_field):
     :rtype: tuple
 
     """
+    # Get the netCDF global attributes
+    global_attributes = cf_field.properties()
+    freq=global_attributes.get('frequency')
     # Get the time coordinates & earliest/latest dates.
-    time_coords = cf_field.dim('T')
-    dates = _get_field_start_end_dates(time_coords)
+    try:
+        if freq == 'fx':
+            time_coords = None
+        else:
+            time_coords = cf_field.dim('T')
+    except:
+        logger.log("Debug: Failed while parsing: {'time_coords'}")
+        raise
+    try:
+        dates = _get_field_start_end_dates(time_coords)
+    except:
+        logger.log("Debug: Failed while parsing:{'start and end dates'}")
+        raise
     if not dates:
         return None, None, None
 
-    # Get the netCDF global attributes
-    global_attributes = cf_field.properties()
 
     # Find out which mip-era file we have
     mip_era = _get_mip_era(global_attributes)
@@ -77,7 +93,11 @@ def parse(cf_field):
     cim2_properties['filenames'] = cf_field.fpath
 
     # Add the time coordinates' calendar to the cim2 properties
-    cim2_properties['calendar'] = _get_calendar(time_coords)
+    try:
+        cim2_properties['calendar'] = _get_calendar(time_coords)
+    except:
+        logger.log("Debug: Failed while parsing:{'calendar'}")
+        raise
 
     # Parse non-simple mappable properties.
     if mip_era == constants.CMIP6:
@@ -181,7 +201,11 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
         if isinstance(branch_time_in_parent, (str, bytes)):
             # Fix in case branch_time_in_parent is a string
             # print "WARNING: branch_time_in_parent is a string, converting to float"
-            branch_time_in_parent = float(branch_time_in_parent)
+            try:
+                branch_time_in_parent = float(branch_time_in_parent.replace('D',''))
+            except:
+                logger.log("Debug: Failed while converting to float:{branch_time_in_parent}")
+                raise
 
         x = cf.Data([branch_time_in_parent],
                     units=parent_time_units).dtarray[0]
@@ -195,7 +219,11 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
         if not isinstance(branch_time_in_child, float):
             # Fix in case branch_time_in_child is a string
             # print "WARNING: branch_time_in_child is a {}, converting to float".format(branch_time_in_child.__class__.__name__)
-            branch_time_in_child = float(branch_time_in_child)            
+            try:
+                branch_time_in_child = float(branch_time_in_child.replace('D',''))
+            except:
+                logger.log("Debug: Failed while converting to float:{branch_time_in_child}")
+                raise
 
         x = cf.Data([branch_time_in_child], units=time_coords.Units).dtarray[0]
         cim2_properties['branch_time_in_child'] = str(x)
