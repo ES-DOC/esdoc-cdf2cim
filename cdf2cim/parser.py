@@ -48,9 +48,6 @@ def parse(cf_field):
     :rtype: tuple
 
     """
-    # Get the netCDF global attributes
-    global_attributes = cf_field.properties()
-    freq=global_attributes.get('frequency')
     # Get the time coordinates & earliest/latest dates.
     time_coords = cf_field.dim('T', default=None)
     if time_coords is None:
