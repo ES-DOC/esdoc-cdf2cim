@@ -52,19 +52,17 @@ def parse(cf_field):
     global_attributes = cf_field.properties()
     freq=global_attributes.get('frequency')
     # Get the time coordinates & earliest/latest dates.
-    try:
-        if freq == 'fx':
-            time_coords = None
-        else:
-            time_coords = cf_field.dim('T')
-    except:
-        logger.log("Debug: Failed while parsing: {'time_coords'}")
-        raise
+    time_coords = cf_field.dim('T', default=None)
+    if time_coords is None:
+        # There are no time coordinates
+        return None, None, None
+    
     try:
         dates = _get_field_start_end_dates(time_coords)
     except:
         logger.log("Debug: Failed while parsing:{'start and end dates'}")
         raise
+
     if not dates:
         return None, None, None
 
