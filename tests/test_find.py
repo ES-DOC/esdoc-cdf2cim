@@ -11,6 +11,7 @@
 
 """
 import inspect
+import os
 
 import cdf2cim
 from cdf2cim import constants
@@ -37,6 +38,13 @@ def test_find_cmip6():
 
     """
     _assert_simulations(CMIP6_NETCDF_DIR, 1, SAMPLE_OUTPUT_CMIP6.keys())
+
+def test_find_cmip6_no_time():
+    """ES-DOC :: cdf2cim :: find :: cmip6 :: no time coords.
+
+    """
+    _assert_simulations(os.path.join(CMIP6_NETCDF_DIR, 'tas_no_time.nc'), 0,
+                        None)
 
 
 def _assert_simulations(criteria, expected_length, expected_fields):

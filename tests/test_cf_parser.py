@@ -60,30 +60,34 @@ def test_cmip6_multiple_files():
     """ES-DOC :: cdf2cim :: yield_simulation_info :: cmip6 :: criteria = multiple files.
 
     """
-    _assert_simulations(CMIP6_NETCDF_FILES, CMIP6_NETCDF_FILE_COUNT)
+    # -1 becuase one of the files contains no time coordinates
+    _assert_simulations(CMIP6_NETCDF_FILES, CMIP6_NETCDF_FILE_COUNT - 1)
 
 
 def test_cmip6_single_directory():
     """ES-DOC :: cdf2cim :: yield_simulation_info :: cmip6 :: criteria = a single directory.
 
     """
-    _assert_simulations(CMIP6_NETCDF_DIR, CMIP6_NETCDF_FILE_COUNT)
+    # -1 becuase one of the files contains no time coordinates
+    _assert_simulations(CMIP6_NETCDF_DIR, CMIP6_NETCDF_FILE_COUNT - 1)
 
 
 def test_multiple_directories():
     """ES-DOC :: cdf2cim :: yield_simulation_info :: criteria = multiple directories.
 
     """
-    _assert_simulations(ALL_NETCDF_DIRS, ALL_NETCDF_FILE_COUNT)
+    # -1 becuase one of the files contains no time coordinates
+    _assert_simulations(ALL_NETCDF_DIRS, ALL_NETCDF_FILE_COUNT - 1)
 
 
 def test_mixed_criteria():
     """ES-DOC :: cdf2cim :: yield_simulation_info :: criteria = single file, single directory.
 
     """
+    # Not +1 becuase one of the files contains no time coordinates
     _assert_simulations(
         [CMIP5_NETCDF_FILE, CMIP6_NETCDF_DIR],
-        CMIP6_NETCDF_FILE_COUNT + 1
+        CMIP6_NETCDF_FILE_COUNT
         )
 
 
