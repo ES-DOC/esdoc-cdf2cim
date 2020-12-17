@@ -12,8 +12,6 @@ from cdf2cim.constants import IO_DIR_SCANNED
 from utils import *
 
 
-
-
 def test_is_function():
     """ES-DOC :: cdf2cim :: publish :: cdf2cim.publish function is supported.
 
@@ -43,9 +41,9 @@ def _test_publish(dpath):
     """
     scanned, _, _ = cdf2cim.scan(dpath, True)
     published, published_errors = cdf2cim.publish()
+    print('published:',published)
+    print('scanned:',scanned)
     assert len(published_errors) == 0, published_errors
-    print(published)
-    print(scanned)
     assert len(published) == len(scanned)
     for fpath in scanned:
         assert fpath.replace(IO_DIR_SCANNED, IO_DIR_PUBLISHED) in published

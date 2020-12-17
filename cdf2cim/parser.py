@@ -14,21 +14,30 @@ import cf
 
 from cdf2cim import constants
 from cdf2cim.io_manager import yield_cf_files
-
+from cdf2cim import logger
 
 
 def yield_parsed(targets):
     """Yields simulation information derived from a parse of cf files.
 
-    :param str|sequence targets: Pointer(s) to file(s) and/or directorie(s).
+    :param str|sequence targets: Pointer(s) to file(s) and/or
+    directorie(s).
 
-    :returns:  Generator yielding simulation information derived from a parse of cf files.
+    :returns: Generator yielding simulation information derived from a
+              parse of cf files.
+
     :rtype: generator
 
     """
     for cf_fields in yield_cf_files(targets):
         for cf_field in cf_fields:
-            identifier, properties, dates = parse(cf_field)
+            try:
+                identifier, properties, dates = parse(cf_field)
+            except:
+                logger.log("Debug: Failed while parsing: {}".format(
+                    cf_field.fpath)
+                )
+                raise
             if identifier:
                 yield cf_field, identifier, properties, dates
         # ... close file to prevent a proliferation of open file handles
@@ -36,17 +45,29 @@ def yield_parsed(targets):
 
 
 def parse(cf_field):
-    """Parses a CF field returning a simulation identifer, a set of CIM properties, & associated dates.
+    """Parses a CF field returning a simulation identifer, a set of CIM
+    properties, & associated dates.
 
     :param cf.Field cf_field: A CF field to be mapped.
 
-    :returns: A 3 member tuple - (simulation identifer, CIM properties, simulation dates).
+    :returns: A 3 member tuple - (simulation identifer, CIM
+              properties, ion dates).
+ 
     :rtype: tuple
 
     """
     # Get the time coordinates & earliest/latest dates.
-    time_coords = cf_field.dim('T')
-    dates = _get_field_start_end_dates(time_coords)
+    time_coords = cf_field.dim('T', default=None)
+    if time_coords is None:
+        # There are no time coordinates, so don't create a JSON string.
+        return None, None, None
+    
+    try:
+        dates = _get_field_start_end_dates(time_coords)
+    except:
+        logger.log("Debug: Failed while parsing:{'start and end dates'}")
+        raise
+
     if not dates:
         return None, None, None
 
@@ -77,7 +98,11 @@ def parse(cf_field):
     cim2_properties['filenames'] = cf_field.fpath
 
     # Add the time coordinates' calendar to the cim2 properties
-    cim2_properties['calendar'] = _get_calendar(time_coords)
+    try:
+        cim2_properties['calendar'] = _get_calendar(time_coords)
+    except:
+        logger.log("Debug: Failed while parsing:{'calendar'}")
+        raise
 
     # Parse non-simple mappable properties.
     if mip_era == constants.CMIP6:
@@ -143,7 +168,10 @@ def _parse_cmip5_properties(cim2_properties, global_attributes, time_coords):
              'parent_physics_index',
              'parent_forcing_index'],
             map(int, re.findall(
-                '\d+',global_attributes.get('parent_experiment_rip', 'N/A')))))
+                '\d+',global_attributes.get('parent_experiment_rip', 'N/A')
+            )))
+    )
+
 
 def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     """Extends cim2 proeprty set with CMIP6 specific properties.
@@ -179,9 +207,17 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     branch_time_in_parent = global_attributes.get('branch_time_in_parent')
     if branch_time_in_parent is not None:
         if isinstance(branch_time_in_parent, (str, bytes)):
-            # Fix in case branch_time_in_parent is a string
-            # print "WARNING: branch_time_in_parent is a string, converting to float"
-            branch_time_in_parent = float(branch_time_in_parent)
+            # Fix in case branch_time_in_parent is a string print
+            # "WARNING: branch_time_in_parent is a string, converting
+            # to float"
+            try:
+                branch_time_in_parent = float(
+                    branch_time_in_parent.replace('D','')
+                )
+            except:
+                logger.log("Debug: Failed while converting to float: "
+                           "{branch_time_in_parent}")
+                raise
 
         x = cf.Data([branch_time_in_parent],
                     units=parent_time_units).dtarray[0]
@@ -193,9 +229,17 @@ def _parse_cmip6_properties(cim2_properties, global_attributes, time_coords):
     branch_time_in_child = global_attributes.get('branch_time_in_child')
     if branch_time_in_child is not None:
         if not isinstance(branch_time_in_child, float):
-            # Fix in case branch_time_in_child is a string
-            # print "WARNING: branch_time_in_child is a {}, converting to float".format(branch_time_in_child.__class__.__name__)
-            branch_time_in_child = float(branch_time_in_child)            
+            # Fix in case branch_time_in_child is a string print
+            # "WARNING: branch_time_in_child is a {}, converting to
+            # float".format(branch_time_in_child.__class__.__name__)
+            try:
+                branch_time_in_child = float(
+                    branch_time_in_child.replace('D','')
+                )
+            except:
+                logger.log("Debug: Failed while converting to float: "
+                           "{branch_time_in_child}")
+                raise
 
         x = cf.Data([branch_time_in_child], units=time_coords.Units).dtarray[0]
         cim2_properties['branch_time_in_child'] = str(x)
