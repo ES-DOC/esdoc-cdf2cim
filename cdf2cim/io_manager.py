@@ -17,6 +17,7 @@ import cf
 import numpy
 
 from cdf2cim import exceptions
+from cdf2cim import encoder
 from cdf2cim import hashifier
 from cdf2cim import logger
 from cdf2cim.constants import FILE_STATUS_PUBLISHED
@@ -25,34 +26,6 @@ from cdf2cim.constants import FILE_STATUS_SCANNED_QUEUED
 from cdf2cim.constants import IO_DIR_SCANNED
 from cdf2cim.constants import IO_DIR_PUBLISHED
 
-
-
-def encode(obj):
-    """Encodes an output from a map/reduce as a JSON safe dictionary.
-
-    :param dict obj: Output from a map/reduce job.
-
-    :returns: A JSON safe dictionary
-    :rtype: dict
-
-    """
-    def _encode(key, value):
-        """Encodes a value.
-
-        """
-        if isinstance(value, numpy.float64):
-            return float(value)
-        if isinstance(value, numpy.int32):
-            return int(value)
-        if key.endswith("_index"):
-            return int(value)
-        return value
-
-    result = collections.OrderedDict()
-    for k in sorted(obj.keys()):
-        result[k] = _encode(k, obj[k])
-
-    return result
 
 
 def yield_files(criteria):
@@ -133,7 +106,7 @@ def dump(obj, overwrite):
 
     """
     # Set metadata (a JSON serializable ordered dictionary).
-    metadata = encode(obj)
+    metadata = encoder.encode(obj)
 
     # Set hash id.
     metadata['_hash_id'] = hashifier.hashify(metadata)

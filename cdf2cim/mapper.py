@@ -62,23 +62,6 @@ def execute(identifier, properties, dates):
         if v:
             cim2_properties[prop] = ', '.join(sorted(v))
 
-    # Include all items from extra3 from all files, omitting
-    # duplicates, as a list
-    extra3 = {
-        'dataset_versions': [],
-        'filenames'       : [],
-    }
-
-    for p in properties:
-        for x, v in extra3.items():
-            v.append(p.get(x))
-
-    for prop, v in extra3.items():
-        v = set(v)
-        v.discard(None)
-        if v:
-            cim2_properties[prop] = tuple(sorted(v))
-
     # ------------------------------------------------------------
     # The cim2_properties dictionary now contains everything
     # needed to create CIM2 Enemble, Ensemble Member and

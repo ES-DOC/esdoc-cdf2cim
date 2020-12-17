@@ -61,6 +61,16 @@ MIP_ERA = {
     MIP_ERA_CMIP6
     }
 
+# Set of fields to exclude from hash derivation.
+NON_HASH_FIELDS = (
+   'contact',
+   'references',
+   'forcing',
+   'variant_info',
+   "filenames",
+   "dataset_versions",
+)
+
 # Supported project codes.
 CMIP5 = 'CMIP5'
 CMIP6 = 'CMIP6'
