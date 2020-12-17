@@ -40,9 +40,10 @@ def execute(targets):
     # ----------------------------------------------------------------
     # For each CF field in this input file ...
     for _, identifier, cim2_properties, dates in parser.yield_parsed(targets):
-        cim2_properties.pop(None, None)
-        simulation_dates[identifier].extend(dates)
-        simulations[identifier].append(cim2_properties)
+        if identifier is not None:            
+            cim2_properties.pop(None, None)
+            simulation_dates[identifier].extend(dates)
+            simulations[identifier].append(cim2_properties)
 
         # Close file to prevent a proliferation of open file handles
         cf.close_one_file()
