@@ -29,7 +29,8 @@ def test_encode():
 
     """
     for obj in cdf2cim.find(NETCDF_DIR):
-        assert isinstance(cdf2cim.io_manager.encode(obj), dict)
+#        assert isinstance(cdf2cim.io_manager.encode(obj), dict)
+        assert isinstance(cdf2cim.encoder.encode(obj), dict)
 
 
 def test_json_conversion_failure():
@@ -46,4 +47,5 @@ def test_convert_to_json():
 
     """
     for obj in cdf2cim.find(NETCDF_DIR):
-        assert json.dumps(cdf2cim.io_manager.encode(obj))
+#        assert json.dumps(cdf2cim.io_manager.encode(obj))
+        assert json.dumps(cdf2cim.encoder.encode(obj))

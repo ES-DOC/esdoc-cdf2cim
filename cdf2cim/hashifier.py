@@ -21,8 +21,8 @@ def hashify(metadata: collections.OrderedDict) -> str:
     :param dict metadata: Simulation metadata.
 
     """
-	target = metadata.copy()
-	for field in _NON_HASH_FIELDS:
-		target.pop(field, None)
+    target = metadata.copy()
+    for field in NON_HASH_FIELDS:
+        target.pop(field, None)
 
     return hashlib.md5(json.dumps(target).encode('utf-8')).hexdigest()
