@@ -93,9 +93,8 @@ def parse(cf_field):
     # Add the dataset version to the cim2 properties. It is assumed
     # that the file path of the file is
     # /a/load/of/DRS/stuff/<VERSION>/filename.nc
-    cim2_properties['dataset_versions'] = cf_field.fpath.split('/')[-2]
-
-    cim2_properties['filenames'] = cf_field.fpath
+    # cim2_properties['dataset_versions'] = cf_field.fpath.split('/')[-2]
+    # cim2_properties['filenames'] = cf_field.fpath
 
     # Add the time coordinates' calendar to the cim2 properties
     try:

@@ -2,9 +2,6 @@
     "branch_time_in_parent": 52560.0, 
     "calendar": "360_day", 
     "contact": "chris.d.jones@metoffice.gov.uk, michael.sanderson@metoffice.gov.uk", 
-    "dataset_versions": [
-        "cmip5"
-    ], 
     "end_time": "2010-12-01 00:00:00", 
     "experiment_id": "rcp85", 
     "forcing": "GHG, SA, Oz, LU, Sl, Vl, BC, OC, (GHG = CO2, N2O, CH4, CFCs)", 

@@ -64,6 +64,7 @@ def _assert_simulation(obj, expected_fields):
     """
     assert isinstance(obj, dict)
     assert obj['mip_era'] in constants.MIP_ERA
-    assert cdf2cim.io_manager.encode(obj)
+#    assert cdf2cim.io_manager.encode(obj)
+    assert cdf2cim.encoder.encode(obj)
     for key in [i for i in expected_fields if not i.startswith('_')]:
         assert key in obj, (key, expected_fields)

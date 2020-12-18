@@ -8,20 +8,21 @@
 
 
 """
+import collections
 import json
 import hashlib
 
+from cdf2cim.constants import NON_HASH_FIELDS
 
 
-def hashify(metadata):
-    """Returns hashes dervied from a cdf2cim metadata blob.
+def hashify(metadata: collections.OrderedDict) -> str:
+    """Returns hashes derived from a cdf2cim metadata blob.
 
     :param dict metadata: Simulation metadata.
 
     """
-    metadata_as_text = json.dumps(metadata)
-    hash_id = hashlib.md5(metadata_as_text.encode('utf-8')).hexdigest()
-    hash_id = f"{hash_id}{metadata['start_time']}{metadata['end_time']}"
-    hash_id = hashlib.md5(hash_id.encode('utf-8')).hexdigest()
+    target = metadata.copy()
+    for field in NON_HASH_FIELDS:
+        target.pop(field, None)
 
-    return hash_id
+    return hashlib.md5(json.dumps(target).encode('utf-8')).hexdigest()
