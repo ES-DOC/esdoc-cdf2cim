@@ -1,3 +1,16 @@
+Version 1.0.3.0 (2020-02-11)
+----------------------------
+
+* Fixed hasjing algorithm
+  (https://github.com/ES-DOC/esdoc-cdf2cim/pull/13)
+* Handle presence of 'D' in branch_time values. 
+* Fix to skip datasets with no time coordinates.
+
+Version 1.0.0.0 (2019-12-22)
+----------------------------
+
+* Python 3 compliant.  Python 2 compatible.
+
 Version 0.4.0.0 (2019-09-21)
 ----------------------------
 
@@ -17,8 +30,3 @@ Version 0.3.1.0 (2018-12-05)
 ----------------------------
 
 * Fix for proliferation of file handles
-
-Version 1.0.0.0 (2019-12-22)
-----------------------------
-
-* Python 3 compliant.  Python 2 compatible.
